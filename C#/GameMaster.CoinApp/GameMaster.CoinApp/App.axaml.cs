@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -8,21 +9,26 @@ namespace GameMaster.CoinApp;
 
 public partial class App : Application
 {
+    public Action? OnRequestLaunchGameMaster { get; set; }
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
 #if DEBUG
-        this.AttachDeveloperTools();
+        // this.AttachDeveloperTools();
 #endif
     }
 
     public override void OnFrameworkInitializationCompleted()
     {
+        var viewModel = new MainViewModel();
+        viewModel.OnRequestLaunchGameMaster = () => OnRequestLaunchGameMaster?.Invoke();
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainViewModel()
+                DataContext = viewModel
             };
         }
 
@@ -30,7 +36,7 @@ public partial class App : Application
         {
             singleViewPlatform.MainView = new MainView
             {
-                DataContext = new MainViewModel()
+                DataContext = viewModel
             };
         }
 

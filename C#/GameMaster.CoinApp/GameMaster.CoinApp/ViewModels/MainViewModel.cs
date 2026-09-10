@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -18,6 +19,14 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isLoading;
 
+    [ObservableProperty]
+    private bool _isAwaitingPermission;
+
+    [ObservableProperty]
+    private string _permissionStatusMessage = string.Empty;
+
+    public Action? OnRequestLaunchGameMaster { get; set; }
+
     public MainViewModel()
     {
         _client = new GameMasterClient();
@@ -29,11 +38,38 @@ public partial class MainViewModel : ViewModelBase
     private async Task LoadProfileAsync()
     {
         IsLoading = true;
-        var profile = await _client.GetPlayerProfileAsync();
-        
-        Coins = profile.Coins;
-        Points = profile.Points;
-        IsLoading = false;
+        IsAwaitingPermission = false;
+        try
+        {
+            var profile = await _client.GetPlayerProfileAsync();
+            
+            // The SDK client returns DisplayName = "Error: ..." on exception
+            if (profile != null && profile.DisplayName != null && profile.DisplayName.StartsWith("Error:"))
+            {
+                IsAwaitingPermission = true;
+                PermissionStatusMessage = "Could not load data from GameMaster. Open GameMaster app and approve permissions for CoinApp, then tap Refresh.";
+                Coins = 0;
+                Points = 0;
+                OnRequestLaunchGameMaster?.Invoke();
+            }
+            else if (profile != null)
+            {
+                Coins = profile.Coins;
+                Points = profile.Points;
+                IsAwaitingPermission = false;
+                PermissionStatusMessage = string.Empty;
+            }
+        }
+        catch (Exception ex)
+        {
+            IsAwaitingPermission = true;
+            PermissionStatusMessage = $"Could not connect to GameMaster: {ex.Message}";
+            OnRequestLaunchGameMaster?.Invoke();
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     [RelayCommand]
@@ -44,6 +80,12 @@ public partial class MainViewModel : ViewModelBase
         {
             Coins = result.NewBalance;
         }
+        else
+        {
+            IsAwaitingPermission = true;
+            PermissionStatusMessage = "Action denied. Check GameMaster permissions.";
+            OnRequestLaunchGameMaster?.Invoke();
+        }
     }
 
     [RelayCommand]
@@ -53,6 +95,12 @@ public partial class MainViewModel : ViewModelBase
         if (result.Success)
         {
             Coins = result.NewBalance;
+        }
+        else
+        {
+            IsAwaitingPermission = true;
+            PermissionStatusMessage = "Action denied. Check GameMaster permissions.";
+            OnRequestLaunchGameMaster?.Invoke();
         }
     }
 }

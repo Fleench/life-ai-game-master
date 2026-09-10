@@ -1,7 +1,9 @@
 using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Avalonia;
 using Avalonia.Android;
+using System;
 
 namespace GameMaster.CoinApp.Android;
 
@@ -17,6 +19,21 @@ public class MainActivity : AvaloniaMainActivity<App>
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {
         return base.CustomizeAppBuilder(builder)
-            .WithInterFont();
+            .WithInterFont()
+            .AfterSetup(_ =>
+            {
+                if (global::Avalonia.Application.Current is App app)
+                {
+                    app.OnRequestLaunchGameMaster = () =>
+                    {
+                        var intent = PackageManager?.GetLaunchIntentForPackage("com.gamemaster.app");
+                        if (intent != null)
+                        {
+                            intent.AddFlags(ActivityFlags.NewTask);
+                            StartActivity(intent);
+                        }
+                    };
+                }
+            });
     }
 }

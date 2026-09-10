@@ -92,6 +92,19 @@ public class GameMasterClient : IPlayerEconomyService
             reply?.Recycle();
         }
     }
+
+    private void AutoLaunchGameMasterIfDenied(Exception ex)
+    {
+        if (ex is Java.Lang.SecurityException || ex.Message.Contains("Permission denied", StringComparison.OrdinalIgnoreCase) || ex.Message.Contains("Could not bind", StringComparison.OrdinalIgnoreCase))
+        {
+            var launchIntent = _context.PackageManager?.GetLaunchIntentForPackage("com.gamemaster.app");
+            if (launchIntent != null)
+            {
+                launchIntent.AddFlags(ActivityFlags.NewTask);
+                _context.StartActivity(launchIntent);
+            }
+        }
+    }
 #endif
 
     public async Task<PlayerProfile> GetPlayerProfileAsync()
@@ -130,6 +143,7 @@ public class GameMasterClient : IPlayerEconomyService
         }
         catch (Exception ex)
         {
+            AutoLaunchGameMasterIfDenied(ex);
             return new PlayerProfile
             {
                 Id = Guid.NewGuid().ToString(),
@@ -183,6 +197,7 @@ public class GameMasterClient : IPlayerEconomyService
         }
         catch (Exception ex)
         {
+            AutoLaunchGameMasterIfDenied(ex);
             return new CoinTransactionResult
             {
                 Success = false,

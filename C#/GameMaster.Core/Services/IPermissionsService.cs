@@ -8,4 +8,7 @@ public interface IPermissionsService {
     Task RevokeAsync(Guid appId, Resource resource, PermissionAction action);
     Task<bool> CheckAsync(Guid appId, Resource resource, PermissionAction action);
     Task<IEnumerable<AppPermission>> GetPermissionsAsync(Guid appId);
+    Task RequestAsync(Guid appId, Resource resource, PermissionAction action);
+    Task RequestIfNotExistsAsync(Guid appId, Resource resource, PermissionAction action);
+    Task<IEnumerable<AppPermission>> GetPendingRequestsAsync();
 }

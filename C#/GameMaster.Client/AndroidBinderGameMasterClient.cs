@@ -195,5 +195,8 @@ public class AndroidBinderGameMasterClient : Java.Lang.Object, IGameMasterClient
         
     public Task RevokePermissionAsync(Guid appId, GameMaster.Client.Models.Resource resource, GameMaster.Client.Models.PermissionAction action, CancellationToken cancellationToken = default)
         => TransactVoidAsync("RevokePermissionAsync", new { AppId = appId, Resource = resource, Action = action });
+
+    public Task RequestPermissionAsync(GameMaster.Client.Models.Resource resource, GameMaster.Client.Models.PermissionAction action, CancellationToken cancellationToken = default)
+        => TransactVoidAsync("RequestPermissionAsync", new { Resource = resource, Action = action });
 }
 #endif

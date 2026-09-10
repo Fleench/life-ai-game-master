@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using GameMaster.Core.Models;
 namespace GameMaster.Core.Services;
 public interface IAppRegistryService {
-    Task<(ConnectedApp App, string PlainTextKey)> RegisterAppAsync(string appName, Platform platform, int? androidUid = null);
+    Task<(ConnectedApp App, string PlainTextKey)> RegisterAppAsync(string appName, Platform platform, int? androidUid = null, byte[]? iconData = null);
     Task<IEnumerable<ConnectedApp>> ListAppsAsync();
     Task DeregisterAppAsync(Guid appId);
     Task UpdateLastSeenAsync(Guid appId);

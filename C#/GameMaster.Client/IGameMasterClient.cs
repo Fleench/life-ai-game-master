@@ -24,4 +24,5 @@ public interface IGameMasterClient
     // Missing methods for perms
     Task GrantPermissionAsync(System.Guid appId, GameMaster.Client.Models.Resource resource, GameMaster.Client.Models.PermissionAction action, CancellationToken cancellationToken = default);
     Task RevokePermissionAsync(System.Guid appId, GameMaster.Client.Models.Resource resource, GameMaster.Client.Models.PermissionAction action, CancellationToken cancellationToken = default);
+    Task RequestPermissionAsync(GameMaster.Client.Models.Resource resource, GameMaster.Client.Models.PermissionAction action, CancellationToken cancellationToken = default);
 }

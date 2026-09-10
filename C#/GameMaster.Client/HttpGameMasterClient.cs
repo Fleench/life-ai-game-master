@@ -150,6 +150,9 @@ public class HttpGameMasterClient : IGameMasterClient
             throw new GameMasterApiException(response.StatusCode, errorContent);
         }
     }
+
+    public Task RequestPermissionAsync(GameMaster.Client.Models.Resource resource, GameMaster.Client.Models.PermissionAction action, CancellationToken cancellationToken = default)
+        => Task.CompletedTask; // REST API: no-op, permissions managed server-side
 }
 
 public class GameMasterApiException : Exception

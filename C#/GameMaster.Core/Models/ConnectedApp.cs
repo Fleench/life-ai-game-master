@@ -6,6 +6,7 @@ public class ConnectedApp {
     public Platform Platform { get; set; }
     public string ApiKeyHash { get; set; } = string.Empty;
     public int? AndroidUid { get; set; }
+    public byte[]? IconData { get; set; }
     public DateTime RegisteredAt { get; set; }
     public DateTime LastSeenAt { get; set; }
 }

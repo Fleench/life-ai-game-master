@@ -21,7 +21,7 @@ public class GameMasterBinderService : Service
 
     public override IBinder? OnBind(Intent? intent)
     {
-        _binder = new GameMasterBinder(GameMaster.App.AppHost.Services);
+        _binder = new GameMasterBinder(this, GameMaster.App.AppHost.Services);
         return _binder;
     }
 
@@ -78,10 +78,12 @@ public class GameMasterBinderService : Service
 
 public class GameMasterBinder : Binder, IGameMasterBinder
 {
+    private readonly Context _context;
     private readonly IServiceProvider _serviceProvider;
 
-    public GameMasterBinder(IServiceProvider serviceProvider)
+    public GameMasterBinder(Context context, IServiceProvider serviceProvider)
     {
+        _context = context;
         _serviceProvider = serviceProvider;
     }
 
@@ -100,7 +102,29 @@ public class GameMasterBinder : Binder, IGameMasterBinder
 
         // Auto-register on first call
         string appName = $"AndroidApp_{uid}";
-        var newApp = await appRegistry.RegisterAppAsync(appName, Platform.Android, uid);
+        byte[]? iconData = null;
+        var packages = _context.PackageManager?.GetPackagesForUid(uid);
+        if (packages != null && packages.Length > 0) {
+            try {
+                var appInfo = _context.PackageManager?.GetApplicationInfo(packages[0], 0);
+                if (appInfo != null) {
+                    var label = appInfo.LoadLabel(_context.PackageManager);
+                    if (!string.IsNullOrEmpty(label)) appName = label;
+                    
+                    var drawable = appInfo.LoadIcon(_context.PackageManager);
+                    if (drawable != null) {
+                        var bitmap = global::Android.Graphics.Bitmap.CreateBitmap(drawable.IntrinsicWidth > 0 ? drawable.IntrinsicWidth : 1, drawable.IntrinsicHeight > 0 ? drawable.IntrinsicHeight : 1, global::Android.Graphics.Bitmap.Config.Argb8888!);
+                        var canvas = new global::Android.Graphics.Canvas(bitmap);
+                        drawable.SetBounds(0, 0, canvas.Width, canvas.Height);
+                        drawable.Draw(canvas);
+                        using var stream = new System.IO.MemoryStream();
+                        bitmap.Compress(global::Android.Graphics.Bitmap.CompressFormat.Png!, 100, stream);
+                        iconData = stream.ToArray();
+                    }
+                }
+            } catch { /* ignore */ }
+        }
+        var newApp = await appRegistry.RegisterAppAsync(appName, Platform.Android, uid, iconData);
         return newApp.App;
     }
 
@@ -112,7 +136,25 @@ public class GameMasterBinder : Binder, IGameMasterBinder
         bool granted = await permService.CheckAsync(app.AppId, resource, action);
         if (!granted)
         {
+            await permService.RequestIfNotExistsAsync(app.AppId, resource, action);
             throw new Java.Lang.SecurityException($"Permission denied: UID {uid} requires {action} on {resource}");
+        }
+    }
+
+    private async Task CleanupDeadAppsAsync()
+    {
+        var appRegistry = _serviceProvider.GetRequiredService<IAppRegistryService>();
+        var apps = await appRegistry.ListAppsAsync();
+        foreach (var app in apps)
+        {
+            if (app.Platform == Platform.Android && app.AndroidUid.HasValue)
+            {
+                var packages = _context.PackageManager?.GetPackagesForUid(app.AndroidUid.Value);
+                if (packages == null || packages.Length == 0)
+                {
+                    await appRegistry.DeregisterAppAsync(app.AppId);
+                }
+            }
         }
     }
 
@@ -226,6 +268,7 @@ public class GameMasterBinder : Binder, IGameMasterBinder
                 {
                     int uid = CallingUid;
                     await EnforcePermissionAsync(uid, CoreResource.ExpPoints, PermissionAction.Manage);
+                    await CleanupDeadAppsAsync();
                     var appRegistry = _serviceProvider.GetRequiredService<IAppRegistryService>();
                     result = await appRegistry.ListAppsAsync();
                 }
@@ -277,6 +320,17 @@ public class GameMasterBinder : Binder, IGameMasterBinder
                     }
                 }
                 break;
+            case "RequestPermissionAsync":
+                {
+                    int uid = CallingUid;
+                    var app = await GetOrRegisterCallerAppAsync(uid);
+                    var doc = System.Text.Json.JsonDocument.Parse(json);
+                    var resource = Enum.Parse<CoreResource>(doc.RootElement.GetProperty("resource").GetString()!, true);
+                    var action = Enum.Parse<PermissionAction>(doc.RootElement.GetProperty("action").GetString()!, true);
+                    var permService = _serviceProvider.GetRequiredService<IPermissionsService>();
+                    await permService.RequestAsync(app.AppId, resource, action);
+                }
+                break;
             default:
                 throw new Java.Lang.IllegalArgumentException("Unknown method: " + method);
         }
@@ -291,7 +345,7 @@ public class GameMasterBinder : Binder, IGameMasterBinder
     public async Task<Player?> GetPlayer()
     {
         int uid = CallingUid;
-        await EnforcePermissionAsync(uid, CoreResource.ExpPoints, PermissionAction.Read); // Using ExpPoints Read as proxy for basic read
+        await GetOrRegisterCallerAppAsync(uid); // ensure app is registered, no permission gate for basic profile
         var playerService = _serviceProvider.GetRequiredService<IPlayerService>();
         return await playerService.GetPlayerAsync();
     }
@@ -299,14 +353,25 @@ public class GameMasterBinder : Binder, IGameMasterBinder
     public async Task<Dictionary<CoreResource, int>> GetPoints()
     {
         int uid = CallingUid;
-        await EnforcePermissionAsync(uid, CoreResource.ExpPoints, PermissionAction.Read);
-        
+        var app = await GetOrRegisterCallerAppAsync(uid);
+        var permService = _serviceProvider.GetRequiredService<IPermissionsService>();
         var pointsService = _serviceProvider.GetRequiredService<IPointsService>();
-        var dict = new Dictionary<CoreResource, int>
+
+        var dict = new Dictionary<CoreResource, int>();
+
+        if (await permService.CheckAsync(app.AppId, CoreResource.ExpPoints, PermissionAction.Read))
+            dict[CoreResource.ExpPoints] = (await pointsService.GetBalanceAsync(CoreResource.ExpPoints.ToString().ToLowerInvariant()))?.Balance ?? 0;
+
+        if (await permService.CheckAsync(app.AppId, CoreResource.Coins, PermissionAction.Read))
+            dict[CoreResource.Coins] = (await pointsService.GetBalanceAsync(CoreResource.Coins.ToString().ToLowerInvariant()))?.Balance ?? 0;
+
+        if (dict.Count == 0)
         {
-            [CoreResource.ExpPoints] = (await pointsService.GetBalanceAsync(CoreResource.ExpPoints.ToString().ToLowerInvariant()))?.Balance ?? 0,
-            [CoreResource.Coins] = (await pointsService.GetBalanceAsync(CoreResource.Coins.ToString().ToLowerInvariant()))?.Balance ?? 0
-        };
+            await permService.RequestIfNotExistsAsync(app.AppId, CoreResource.Coins, PermissionAction.Read);
+            await permService.RequestIfNotExistsAsync(app.AppId, CoreResource.ExpPoints, PermissionAction.Read);
+            throw new Java.Lang.SecurityException($"Permission denied: UID {uid} has no read access to Coins or ExpPoints");
+        }
+
         return dict;
     }
 

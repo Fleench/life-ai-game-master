@@ -5,5 +5,6 @@ public class AppPermission {
     public Resource Resource { get; set; }
     public PermissionAction Action { get; set; }
     public bool Granted { get; set; }
+    public string Status { get; set; } = "granted";
     public DateTime UpdatedAt { get; set; }
 }

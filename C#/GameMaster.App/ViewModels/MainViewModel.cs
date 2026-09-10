@@ -22,12 +22,14 @@ public partial class MainViewModel : ViewModelBase
 
     public ReplViewModel ReplVm { get; }
     public AppHubViewModel AppHubVm { get; }
+    public PendingPermissionsViewModel PendingPermissionsVm { get; }
 
     public MainViewModel()
     {
         ReplVm = new ReplViewModel();
         ReplVm.CommandExecuted += (s, e) => LoadStats();
         AppHubVm = new AppHubViewModel();
+        PendingPermissionsVm = new PendingPermissionsViewModel();
         
         LoadStats();
     }

@@ -32,6 +32,23 @@
                         VerticalAlignment="Center"/>
             </Grid>
 
+            <!-- Permission Notice Banner (visible only when awaiting permission) -->
+            <Border Background="#FFF3CD" 
+                    CornerRadius="12" 
+                    Padding="16"
+                    IsVisible="{Binding IsAwaitingPermission}">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="⚠️ Permission Required" 
+                               FontWeight="SemiBold" 
+                               Foreground="#856404" 
+                               FontSize="16"/>
+                    <TextBlock Text="{Binding PermissionStatusMessage}" 
+                               TextWrapping="Wrap"
+                               Foreground="#856404" 
+                               FontSize="13"/>
+                </StackPanel>
+            </Border>
+
             <!-- Points Card -->
             <Border Background="White" CornerRadius="16" Padding="24" BoxShadow="0 4 16 0 #1A000000">
                 <StackPanel Spacing="8">
