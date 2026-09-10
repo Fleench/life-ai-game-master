@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.gamemaster.android">
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <permission android:name="com.gamemaster.BIND" android:protectionLevel="normal" />
+    <uses-permission android:name="com.gamemaster.BIND" />
+    
+    <application android:allowBackup="true" android:label="Game Master Binder" android:supportsRtl="true">
+        <receiver android:name="com.gamemaster.android.BootReceiver" android:enabled="true" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <service android:name="com.gamemaster.android.GameMasterBinderService" android:exported="true" android:permission="com.gamemaster.BIND">
+            <intent-filter>
+                <action android:name="com.gamemaster.BIND_SERVICE" />
+            </intent-filter>
+        </service>
+    </application>
+</manifest>

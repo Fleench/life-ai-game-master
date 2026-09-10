@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.gamemaster.app" android:versionCode="1" android:versionName="1.0">
+  <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33" />
+  <uses-permission android:name="com.gamemaster.BIND" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+  <queries>
+    <package android:name="com.gamemaster.android" />
+  </queries>
+  <application android:allowBackup="true" android:label="Game Master" android:theme="@style/MyTheme.NoActionBar">
+  </application>
+  <permission android:name="com.gamemaster.BIND" android:protectionLevel="normal" />
+</manifest>

@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net9.0;net9.0-android</TargetFrameworks>
+    <OutputType Condition="'$(TargetFramework)' == 'net9.0'">WinExe</OutputType>
+    <OutputType Condition="'$(TargetFramework)' == 'net9.0-android'">Exe</OutputType>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationManifest Condition="'$(TargetFramework)' == 'net9.0'">app.manifest</ApplicationManifest>
+    
+    <SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net9.0-android'">21</SupportedOSPlatformVersion>
+    <ApplicationId Condition="'$(TargetFramework)' == 'net9.0-android'">com.gamemaster.app</ApplicationId>
+    <ApplicationVersion Condition="'$(TargetFramework)' == 'net9.0-android'">1</ApplicationVersion>
+    <ApplicationDisplayVersion Condition="'$(TargetFramework)' == 'net9.0-android'">1.0</ApplicationDisplayVersion>
+    <AndroidManifest Condition="'$(TargetFramework)' == 'net9.0-android'">AndroidManifest.xml</AndroidManifest>
+    <EmbedAssembliesIntoApk Condition="'$(TargetFramework)' == 'net9.0-android'">true</EmbedAssembliesIntoApk>
+    <AndroidUseFastDeployment Condition="'$(TargetFramework)' == 'net9.0-android'">false</AndroidUseFastDeployment>
+    <RunAOTCompilation Condition="'$(TargetFramework)' == 'net9.0-android'">false</RunAOTCompilation>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' != 'net9.0-android'">
+    <Compile Remove="Android\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.2.0" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.0" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.0" />
+    <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3">
+      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.11" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+    <PackageReference Include="Avalonia.Desktop" Version="11.2.0" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-android'">
+    <PackageReference Include="Avalonia.Android" Version="11.2.0" />
+    <AndroidResource Include="Android\Resources\values\styles.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GameMaster.Core\GameMaster.Core.csproj" />
+    <ProjectReference Include="..\GameMaster.Data\GameMaster.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+    <ProjectReference Include="..\GameMaster.Api\GameMaster.Api.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-android'">
+    <ProjectReference Include="..\GameMaster.Client\GameMaster.Client.csproj" />
+  </ItemGroup>
+</Project>

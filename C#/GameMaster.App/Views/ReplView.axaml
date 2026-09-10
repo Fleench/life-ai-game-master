@@ -1,0 +1,80 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GameMaster.App.ViewModels"
+             x:Class="GameMaster.App.Views.ReplView"
+             x:DataType="vm:ReplViewModel"
+             Background="#1e1e1e"
+             Foreground="#d4d4d4"
+             VerticalAlignment="Stretch"
+             HorizontalAlignment="Stretch"
+             PointerPressed="OnTerminalTapped">
+    
+    <ScrollViewer x:Name="TerminalScrollViewer" Margin="20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <TextBlock Text="Welcome to the GameMaster REPL! Type 'help' to see available commands or 'clear' to clear the terminal."
+                       Foreground="#D4D4D4"
+                       FontFamily="Courier New, Consolas, Monospace"
+                       TextWrapping="Wrap"
+                       Margin="0,0,0,10" />
+
+            <ItemsControl ItemsSource="{Binding Messages}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <!-- Prompt line for echoed commands -->
+                            <StackPanel Orientation="Horizontal" IsVisible="{Binding IsCommandEcho}" Margin="0,5,0,0">
+                                <TextBlock VerticalAlignment="Center" FontFamily="Courier New, Consolas, Monospace" TextWrapping="Wrap">
+                                    <Run Text="user@gamemaster" Foreground="#8ae234" FontWeight="Bold"/>
+                                    <Run Text=":" Foreground="#d4d4d4"/>
+                                    <Run Text="~" Foreground="#729fcf" FontWeight="Bold"/>
+                                    <Run Text="$ " Foreground="#d4d4d4"/>
+                                    <Run Text="{Binding Text}" Foreground="#d4d4d4"/>
+                                </TextBlock>
+                            </StackPanel>
+                            
+                            <!-- Standard output for results and errors -->
+                            <TextBlock Text="{Binding Text}" 
+                                       Foreground="{Binding Color}" 
+                                       FontFamily="Courier New, Consolas, Monospace" 
+                                       TextWrapping="Wrap"
+                                       IsVisible="{Binding !IsCommandEcho}"
+                                       Margin="0,5,0,0" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            
+            <Grid ColumnDefinitions="Auto, *" Margin="0,5,0,0">
+                <TextBlock Grid.Column="0" VerticalAlignment="Center" FontFamily="Courier New, Consolas, Monospace">
+                    <Run Text="user@gamemaster" Foreground="#8ae234" FontWeight="Bold"/>
+                    <Run Text=":" Foreground="#d4d4d4"/>
+                    <Run Text="~" Foreground="#729fcf" FontWeight="Bold"/>
+                    <Run Text="$" Foreground="#d4d4d4"/>
+                </TextBlock>
+                <TextBox Grid.Column="1" x:Name="InputTextBox" Text="{Binding InputText}" 
+                         FontFamily="Courier New, Consolas, Monospace"
+                         Foreground="#d4d4d4"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         CaretBrush="#d4d4d4"
+                         VerticalAlignment="Center"
+                         Margin="5,0,0,0"
+                         HorizontalAlignment="Stretch">
+                    <TextBox.Styles>
+                        <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                        </Style>
+                        <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                        </Style>
+                    </TextBox.Styles>
+                    <TextBox.KeyBindings>
+                        <KeyBinding Gesture="Enter" Command="{Binding ExecuteCommand}" CommandParameter="{Binding $parent[TextBox].Text}" />
+                    </TextBox.KeyBindings>
+                </TextBox>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

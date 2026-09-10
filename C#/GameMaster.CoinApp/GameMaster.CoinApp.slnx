@@ -1,0 +1,11 @@
+﻿<Solution>
+  <Project Path="GameMaster.CoinApp.Android/GameMaster.CoinApp.Android.csproj">
+    <Deploy />
+  </Project>
+  <Project Path="GameMaster.CoinApp.Browser/GameMaster.CoinApp.Browser.csproj" />
+  <Project Path="GameMaster.CoinApp.Desktop/GameMaster.CoinApp.Desktop.csproj" />
+  <Project Path="GameMaster.CoinApp.iOS/GameMaster.CoinApp.iOS.csproj">
+    <Deploy />
+  </Project>
+  <Project Path="GameMaster.CoinApp/GameMaster.CoinApp.csproj" />
+</Solution>

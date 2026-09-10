@@ -1,0 +1,12 @@
+[Unit]
+Description=Game Master Backend Service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/GameMaster
+ExecStart=/usr/bin/dotnet %h/GameMaster/GameMaster.Desktop.dll
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

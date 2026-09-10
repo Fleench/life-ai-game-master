@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GameMaster.App.ViewModels"
+             xmlns:views="using:GameMaster.App.Views"
+             x:Class="GameMaster.App.Views.MainView"
+             x:DataType="vm:MainViewModel">
+    <Grid RowDefinitions="Auto, *">
+        <!-- Player Stats Header -->
+        <Border Grid.Row="0" Background="#333" Padding="15">
+            <StackPanel Orientation="Horizontal" Spacing="20">
+                <TextBlock Text="{Binding PlayerName}" FontWeight="Bold" FontSize="18" Foreground="White" />
+                <TextBlock Text="{Binding ExpBalance, StringFormat='EXP: {0}'}" FontSize="16" Foreground="LightGreen" />
+                <TextBlock Text="{Binding CoinsBalance, StringFormat='Coins: {0}'}" FontSize="16" Foreground="Gold" />
+                <!--<TextBlock Text="{Binding InventoryCount, StringFormat='Items: {0}'}" FontSize="16" Foreground="LightBlue" />-->
+            </StackPanel>
+        </Border>
+        
+        <!-- Tabs -->
+        <TabControl Grid.Row="1" TabStripPlacement="Bottom">
+            <!-- App Hub Tab -->
+            <TabItem Header="App Hub">
+                <views:AppHubView DataContext="{Binding AppHubVm}" />
+            </TabItem>
+            
+            <!-- REPL Tab -->
+            <TabItem Header="REPL Terminal">
+                <views:ReplView DataContext="{Binding ReplVm}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

@@ -1,0 +1,111 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.Core", "GameMaster.Core\GameMaster.Core.csproj", "{058E161D-3646-4851-8825-9242AF7B06F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.Data", "GameMaster.Data\GameMaster.Data.csproj", "{C76D030F-B8FE-45D3-8828-E241E8A45A4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.Api", "GameMaster.Api\GameMaster.Api.csproj", "{CD79673C-4D15-42F0-A9B6-F837DC372548}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.App", "GameMaster.App\GameMaster.App.csproj", "{CF4D33C6-7567-411A-AA26-EF54AFCFF2DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.Desktop", "GameMaster.Desktop\GameMaster.Desktop.csproj", "{243CCCF0-1B94-494A-BD2E-C76455E95FC5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.Android", "GameMaster.Android\GameMaster.Android.csproj", "{E878D4BE-049C-41FE-BF31-782B010DDE31}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.Tests", "GameMaster.Tests\GameMaster.Tests.csproj", "{CBE88F72-57CC-4E14-A391-5A5686CF3E67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.Client", "GameMaster.Client\GameMaster.Client.csproj", "{4123D52E-3790-4D22-B537-162C1E49DD3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.Client.Tests", "GameMaster.Client.Tests\GameMaster.Client.Tests.csproj", "{2AAA070A-72FE-4FFE-8E17-A20A93C89476}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.Sdk", "..\GameMaster.Sdk\GameMaster.Sdk.csproj", "{229FE616-C90E-4283-AFC6-23345E58A28D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GameMaster.CoinApp", "GameMaster.CoinApp", "{F569B0A7-D5AA-4532-B45E-836D90FA63DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.CoinApp", "GameMaster.CoinApp\GameMaster.CoinApp\GameMaster.CoinApp.csproj", "{8789899D-7126-4CAE-A779-B81E54528EC9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.CoinApp.Android", "GameMaster.CoinApp\GameMaster.CoinApp.Android\GameMaster.CoinApp.Android.csproj", "{F0A0A416-1880-43A0-ABF5-BDF13D27AE70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.CoinApp.Desktop", "GameMaster.CoinApp\GameMaster.CoinApp.Desktop\GameMaster.CoinApp.Desktop.csproj", "{C7215CCE-4ADF-4736-8FB0-53D85216048F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.CoinApp.Browser", "GameMaster.CoinApp\GameMaster.CoinApp.Browser\GameMaster.CoinApp.Browser.csproj", "{724C863A-C1AF-4095-8337-01EED42C5C86}"
+EndProject
+
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{058E161D-3646-4851-8825-9242AF7B06F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{058E161D-3646-4851-8825-9242AF7B06F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{058E161D-3646-4851-8825-9242AF7B06F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{058E161D-3646-4851-8825-9242AF7B06F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C76D030F-B8FE-45D3-8828-E241E8A45A4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C76D030F-B8FE-45D3-8828-E241E8A45A4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C76D030F-B8FE-45D3-8828-E241E8A45A4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C76D030F-B8FE-45D3-8828-E241E8A45A4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD79673C-4D15-42F0-A9B6-F837DC372548}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD79673C-4D15-42F0-A9B6-F837DC372548}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD79673C-4D15-42F0-A9B6-F837DC372548}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD79673C-4D15-42F0-A9B6-F837DC372548}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF4D33C6-7567-411A-AA26-EF54AFCFF2DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF4D33C6-7567-411A-AA26-EF54AFCFF2DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF4D33C6-7567-411A-AA26-EF54AFCFF2DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF4D33C6-7567-411A-AA26-EF54AFCFF2DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{243CCCF0-1B94-494A-BD2E-C76455E95FC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{243CCCF0-1B94-494A-BD2E-C76455E95FC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{243CCCF0-1B94-494A-BD2E-C76455E95FC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{243CCCF0-1B94-494A-BD2E-C76455E95FC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E878D4BE-049C-41FE-BF31-782B010DDE31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E878D4BE-049C-41FE-BF31-782B010DDE31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E878D4BE-049C-41FE-BF31-782B010DDE31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E878D4BE-049C-41FE-BF31-782B010DDE31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBE88F72-57CC-4E14-A391-5A5686CF3E67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBE88F72-57CC-4E14-A391-5A5686CF3E67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBE88F72-57CC-4E14-A391-5A5686CF3E67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBE88F72-57CC-4E14-A391-5A5686CF3E67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4123D52E-3790-4D22-B537-162C1E49DD3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4123D52E-3790-4D22-B537-162C1E49DD3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4123D52E-3790-4D22-B537-162C1E49DD3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4123D52E-3790-4D22-B537-162C1E49DD3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AAA070A-72FE-4FFE-8E17-A20A93C89476}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AAA070A-72FE-4FFE-8E17-A20A93C89476}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AAA070A-72FE-4FFE-8E17-A20A93C89476}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AAA070A-72FE-4FFE-8E17-A20A93C89476}.Release|Any CPU.Build.0 = Release|Any CPU
+		{229FE616-C90E-4283-AFC6-23345E58A28D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{229FE616-C90E-4283-AFC6-23345E58A28D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{229FE616-C90E-4283-AFC6-23345E58A28D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{229FE616-C90E-4283-AFC6-23345E58A28D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8789899D-7126-4CAE-A779-B81E54528EC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8789899D-7126-4CAE-A779-B81E54528EC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8789899D-7126-4CAE-A779-B81E54528EC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8789899D-7126-4CAE-A779-B81E54528EC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0A0A416-1880-43A0-ABF5-BDF13D27AE70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0A0A416-1880-43A0-ABF5-BDF13D27AE70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0A0A416-1880-43A0-ABF5-BDF13D27AE70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0A0A416-1880-43A0-ABF5-BDF13D27AE70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7215CCE-4ADF-4736-8FB0-53D85216048F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7215CCE-4ADF-4736-8FB0-53D85216048F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7215CCE-4ADF-4736-8FB0-53D85216048F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7215CCE-4ADF-4736-8FB0-53D85216048F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{724C863A-C1AF-4095-8337-01EED42C5C86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{724C863A-C1AF-4095-8337-01EED42C5C86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{724C863A-C1AF-4095-8337-01EED42C5C86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{724C863A-C1AF-4095-8337-01EED42C5C86}.Release|Any CPU.Build.0 = Release|Any CPU
+
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8789899D-7126-4CAE-A779-B81E54528EC9} = {F569B0A7-D5AA-4532-B45E-836D90FA63DD}
+		{F0A0A416-1880-43A0-ABF5-BDF13D27AE70} = {F569B0A7-D5AA-4532-B45E-836D90FA63DD}
+		{C7215CCE-4ADF-4736-8FB0-53D85216048F} = {F569B0A7-D5AA-4532-B45E-836D90FA63DD}
+		{724C863A-C1AF-4095-8337-01EED42C5C86} = {F569B0A7-D5AA-4532-B45E-836D90FA63DD}
+
+	EndGlobalSection
+EndGlobal
