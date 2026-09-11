@@ -10,12 +10,15 @@ using GameMaster.App.Services;
 using Microsoft.Extensions.DependencyInjection;
 using CoreResource = GameMaster.Core.Models.Resource;
 
+using Avalonia.Threading;
+
 namespace GameMaster.App.ViewModels;
 
 public partial class AppHubViewModel : ViewModelBase
 {
     private readonly IAppLauncherService? _launcherService;
     private readonly IAppRegistryService? _appService;
+    private readonly DispatcherTimer _refreshTimer;
 
     [ObservableProperty]
     private ObservableCollection<AppItemViewModel> _apps = new();
@@ -29,6 +32,13 @@ public partial class AppHubViewModel : ViewModelBase
             _appService = AppHost.Services.GetService<IAppRegistryService>();
         }
         _ = LoadAppsAsync();
+        
+        _refreshTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(2)
+        };
+        _refreshTimer.Tick += async (sender, e) => await LoadAppsAsync();
+        _refreshTimer.Start();
     }
 
     public AppHubViewModel(IAppLauncherService? launcherService, IAppRegistryService? appService)
@@ -36,6 +46,13 @@ public partial class AppHubViewModel : ViewModelBase
         _launcherService = launcherService;
         _appService = appService;
         _ = LoadAppsAsync();
+        
+        _refreshTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(2)
+        };
+        _refreshTimer.Tick += async (sender, e) => await LoadAppsAsync();
+        _refreshTimer.Start();
     }
     
     [RelayCommand]
