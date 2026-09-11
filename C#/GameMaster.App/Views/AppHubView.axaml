@@ -2,7 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:GameMaster.App.ViewModels"
              x:Class="GameMaster.App.Views.AppHubView"
-             x:DataType="vm:AppHubViewModel">
+             x:DataType="vm:AppHubViewModel"
+             x:Name="Root">
     
     <Panel>
         <Grid RowDefinitions="Auto,*">
@@ -24,15 +25,15 @@
                                     Padding="15" 
                                     Width="200" 
                                     Height="200"
-                                    Command="{Binding $parent[UserControl].DataContext.LaunchAppCommand}"
+                                    Command="{Binding #Root.((vm:AppHubViewModel)DataContext).LaunchAppCommand}"
                                     CommandParameter="{Binding}">
                                 <Button.ContextFlyout>
                                     <MenuFlyout>
                                         <MenuItem Header="App Info" 
-                                                  Command="{Binding $parent[UserControl].DataContext.OpenAppInfoCommand}"
+                                                  Command="{Binding #Root.((vm:AppHubViewModel)DataContext).OpenAppInfoCommand}"
                                                   CommandParameter="{Binding}" />
                                         <MenuItem Header="Delete" 
-                                                  Command="{Binding $parent[UserControl].DataContext.DeleteAppCommand}"
+                                                  Command="{Binding #Root.((vm:AppHubViewModel)DataContext).DeleteAppCommand}"
                                                   CommandParameter="{Binding}" />
                                     </MenuFlyout>
                                 </Button.ContextFlyout>
