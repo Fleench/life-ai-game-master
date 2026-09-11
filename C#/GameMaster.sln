@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -12,8 +12,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.App", "GameMaster.App\GameMaster.App.csproj", "{CF4D33C6-7567-411A-AA26-EF54AFCFF2DD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.Desktop", "GameMaster.Desktop\GameMaster.Desktop.csproj", "{243CCCF0-1B94-494A-BD2E-C76455E95FC5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.Android", "GameMaster.Android\GameMaster.Android.csproj", "{E878D4BE-049C-41FE-BF31-782B010DDE31}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.Tests", "GameMaster.Tests\GameMaster.Tests.csproj", "{CBE88F72-57CC-4E14-A391-5A5686CF3E67}"
 EndProject
@@ -33,7 +31,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.CoinApp.Desktop"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaster.CoinApp.Browser", "GameMaster.CoinApp\GameMaster.CoinApp.Browser\GameMaster.CoinApp.Browser.csproj", "{724C863A-C1AF-4095-8337-01EED42C5C86}"
 EndProject
-
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,10 +60,6 @@ Global
 		{243CCCF0-1B94-494A-BD2E-C76455E95FC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{243CCCF0-1B94-494A-BD2E-C76455E95FC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{243CCCF0-1B94-494A-BD2E-C76455E95FC5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E878D4BE-049C-41FE-BF31-782B010DDE31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E878D4BE-049C-41FE-BF31-782B010DDE31}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E878D4BE-049C-41FE-BF31-782B010DDE31}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E878D4BE-049C-41FE-BF31-782B010DDE31}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CBE88F72-57CC-4E14-A391-5A5686CF3E67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CBE88F72-57CC-4E14-A391-5A5686CF3E67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBE88F72-57CC-4E14-A391-5A5686CF3E67}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -99,13 +92,11 @@ Global
 		{724C863A-C1AF-4095-8337-01EED42C5C86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{724C863A-C1AF-4095-8337-01EED42C5C86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{724C863A-C1AF-4095-8337-01EED42C5C86}.Release|Any CPU.Build.0 = Release|Any CPU
-
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8789899D-7126-4CAE-A779-B81E54528EC9} = {F569B0A7-D5AA-4532-B45E-836D90FA63DD}
 		{F0A0A416-1880-43A0-ABF5-BDF13D27AE70} = {F569B0A7-D5AA-4532-B45E-836D90FA63DD}
 		{C7215CCE-4ADF-4736-8FB0-53D85216048F} = {F569B0A7-D5AA-4532-B45E-836D90FA63DD}
 		{724C863A-C1AF-4095-8337-01EED42C5C86} = {F569B0A7-D5AA-4532-B45E-836D90FA63DD}
-
 	EndGlobalSection
 EndGlobal
