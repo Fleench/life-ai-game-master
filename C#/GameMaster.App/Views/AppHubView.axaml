@@ -1,6 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:GameMaster.App.ViewModels;assembly=GameMaster.App"
+             xmlns:vm="using:GameMaster.App.ViewModels"
              x:Class="GameMaster.App.Views.AppHubView"
              x:DataType="vm:AppHubViewModel">
     
@@ -24,15 +24,15 @@
                                     Padding="15" 
                                     Width="200" 
                                     Height="200"
-                                    Command="{Binding $parent[UserControl].((vm:AppHubViewModel)DataContext).LaunchAppCommand}"
+                                    Command="{Binding $parent[UserControl].DataContext.LaunchAppCommand}"
                                     CommandParameter="{Binding}">
                                 <Button.ContextFlyout>
                                     <MenuFlyout>
                                         <MenuItem Header="App Info" 
-                                                  Command="{Binding $parent[UserControl].((vm:AppHubViewModel)DataContext).OpenAppInfoCommand}"
+                                                  Command="{Binding $parent[UserControl].DataContext.OpenAppInfoCommand}"
                                                   CommandParameter="{Binding}" />
                                         <MenuItem Header="Delete" 
-                                                  Command="{Binding $parent[UserControl].((vm:AppHubViewModel)DataContext).DeleteAppCommand}"
+                                                  Command="{Binding $parent[UserControl].DataContext.DeleteAppCommand}"
                                                   CommandParameter="{Binding}" />
                                     </MenuFlyout>
                                 </Button.ContextFlyout>
