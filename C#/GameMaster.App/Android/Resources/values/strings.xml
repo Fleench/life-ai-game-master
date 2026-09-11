@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="desc_read_coins">Allow app to read your GameMaster coin balance</string>
+  <string name="desc_award_coins">Allow app to award GameMaster coins</string>
+  <string name="desc_spend_coins">Allow app to spend your GameMaster coins</string>
+  <string name="desc_manage_coins">Allow app to manage your GameMaster coins</string>
+  <string name="desc_read_exppoints">Allow app to read your GameMaster ExpPoints balance</string>
+  <string name="desc_award_exppoints">Allow app to award GameMaster ExpPoints</string>
+  <string name="desc_spend_exppoints">Allow app to spend your GameMaster ExpPoints</string>
+  <string name="desc_manage_exppoints">Allow app to manage your GameMaster ExpPoints</string>
+  <string name="desc_read_inventory">Allow app to read your GameMaster inventory</string>
+  <string name="desc_award_inventory">Allow app to award GameMaster inventory items</string>
+  <string name="desc_spend_inventory">Allow app to spend your GameMaster inventory items</string>
+  <string name="desc_manage_inventory">Allow app to manage your GameMaster inventory</string>
+  <string name="desc_economy_group">Access GameMaster virtual economy features</string>
+</resources>

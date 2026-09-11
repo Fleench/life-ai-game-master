@@ -18,4 +18,10 @@ public interface IPlayerEconomyService
     /// <param name="reason">An optional reason for the transaction.</param>
     /// <returns>A result indicating success or failure along with the new balance.</returns>
     Task<CoinTransactionResult> AdjustCoinsAsync(int amount, string reason = "");
+    
+    /// <summary>
+    /// Adds or removes a specific resource from the current player's balance.
+    /// Use a negative amount to remove the resource.
+    /// </summary>
+    Task<CoinTransactionResult> AdjustResourceAsync(string resource, int amount, string reason = "");
 }

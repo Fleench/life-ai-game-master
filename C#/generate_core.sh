@@ -65,7 +65,12 @@ namespace GameMaster.Core.Models;
 public enum Resource {
     ExpPoints,
     Coins,
-    Inventory
+    Inventory,
+    PhysicalExp,
+    MentalExp,
+    EmotionalExp,
+    SocialExp,
+    SpiritualExp
 }
 C_EOF
 

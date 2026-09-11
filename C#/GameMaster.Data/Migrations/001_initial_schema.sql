@@ -31,16 +31,6 @@ CREATE TABLE IF NOT EXISTS connected_apps (
     last_seen_at DATETIME NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS app_permissions (
-    app_id TEXT NOT NULL,
-    resource INTEGER NOT NULL,
-    action INTEGER NOT NULL,
-    granted INTEGER NOT NULL,
-    updated_at DATETIME NOT NULL,
-    PRIMARY KEY (app_id, resource, action),
-    FOREIGN KEY(app_id) REFERENCES connected_apps(app_id) ON DELETE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS paired_devices (
     device_id TEXT PRIMARY KEY,
     device_name TEXT NOT NULL,

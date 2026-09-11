@@ -57,20 +57,6 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         // 4. Missing Permission -> 403
         var req4 = new HttpRequestMessage(HttpMethod.Get, "/v1/player");
         req4.Headers.Add("X-Api-Key", apiKey);
-        var res4 = await client.SendAsync(req4);
-        Assert.Equal(HttpStatusCode.Forbidden, res4.StatusCode);
-
-        // 5. Grant Permission internally
-        using (var scope = _factory.Services.CreateScope())
-        {
-            var perms = scope.ServiceProvider.GetRequiredService<IPermissionsService>();
-            await perms.GrantAsync(appId, Resource.ExpPoints, PermissionAction.Read);
-            await perms.GrantAsync(appId, Resource.ExpPoints, PermissionAction.Award);
-            await perms.GrantAsync(appId, Resource.ExpPoints, PermissionAction.Spend);
-            await perms.GrantAsync(appId, Resource.Inventory, PermissionAction.Read);
-            await perms.GrantAsync(appId, Resource.Inventory, PermissionAction.Award);
-            await perms.GrantAsync(appId, Resource.Inventory, PermissionAction.Spend);
-        }
 
         // 6. Happy Path: Get Player
         var req6 = new HttpRequestMessage(HttpMethod.Get, "/v1/player");

@@ -19,13 +19,6 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isLoading;
 
-    [ObservableProperty]
-    private bool _isAwaitingPermission;
-
-    [ObservableProperty]
-    private string _permissionStatusMessage = string.Empty;
-
-    public Action? OnRequestLaunchGameMaster { get; set; }
 
     public MainViewModel()
     {
@@ -38,7 +31,6 @@ public partial class MainViewModel : ViewModelBase
     private async Task LoadProfileAsync()
     {
         IsLoading = true;
-        IsAwaitingPermission = false;
         try
         {
             var profile = await _client.GetPlayerProfileAsync();
@@ -46,25 +38,18 @@ public partial class MainViewModel : ViewModelBase
             // The SDK client returns DisplayName = "Error: ..." on exception
             if (profile != null && profile.DisplayName != null && profile.DisplayName.StartsWith("Error:"))
             {
-                IsAwaitingPermission = true;
-                PermissionStatusMessage = "Could not load data from GameMaster. Open GameMaster app and approve permissions for CoinApp, then tap Refresh.";
                 Coins = 0;
                 Points = 0;
-                OnRequestLaunchGameMaster?.Invoke();
             }
             else if (profile != null)
             {
                 Coins = profile.Coins;
                 Points = profile.Points;
-                IsAwaitingPermission = false;
-                PermissionStatusMessage = string.Empty;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            IsAwaitingPermission = true;
-            PermissionStatusMessage = $"Could not connect to GameMaster: {ex.Message}";
-            OnRequestLaunchGameMaster?.Invoke();
+            // Ignored, banner removed
         }
         finally
         {
@@ -72,35 +57,36 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private async Task AddCoinAsync()
+    [ObservableProperty]
+    private string _selectedResource = "Coins";
+
+    public string[] AvailableResources { get; } = 
     {
-        var result = await _client.AdjustCoinsAsync(1, "Added coin via UI");
+        "Coins",
+        "PhysicalExp",
+        "MentalExp",
+        "EmotionalExp",
+        "SocialExp",
+        "SpiritualExp"
+    };
+
+    [RelayCommand]
+    private async Task AddResourceAsync()
+    {
+        var result = await _client.AdjustResourceAsync(SelectedResource, 1, "Added resource via UI");
         if (result.Success)
         {
-            Coins = result.NewBalance;
-        }
-        else
-        {
-            IsAwaitingPermission = true;
-            PermissionStatusMessage = "Action denied. Check GameMaster permissions.";
-            OnRequestLaunchGameMaster?.Invoke();
+            await LoadProfileAsync();
         }
     }
 
     [RelayCommand]
-    private async Task RemoveCoinAsync()
+    private async Task RemoveResourceAsync()
     {
-        var result = await _client.AdjustCoinsAsync(-1, "Removed coin via UI");
+        var result = await _client.AdjustResourceAsync(SelectedResource, -1, "Removed resource via UI");
         if (result.Success)
         {
-            Coins = result.NewBalance;
-        }
-        else
-        {
-            IsAwaitingPermission = true;
-            PermissionStatusMessage = "Action denied. Check GameMaster permissions.";
-            OnRequestLaunchGameMaster?.Invoke();
+            await LoadProfileAsync();
         }
     }
 }

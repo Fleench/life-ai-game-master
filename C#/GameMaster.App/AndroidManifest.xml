@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.gamemaster.app" android:versionCode="1" android:versionName="1.0">
   <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33" />
-  <uses-permission android:name="com.gamemaster.BIND" />
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
   <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
   <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+  <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
   <queries>
     <intent>
         <action android:name="com.gamemaster.APP_CLIENT" />
@@ -13,5 +13,16 @@
   </queries>
   <application android:allowBackup="true" android:label="Game Master" android:theme="@style/MyTheme.NoActionBar">
   </application>
-  <permission android:name="com.gamemaster.BIND" android:protectionLevel="normal" />
+  <permission android:name="com.gamemaster.permission.READ_COINS" android:protectionLevel="dangerous" android:label="Read Coins" android:description="@string/desc_read_coins" />
+  <permission android:name="com.gamemaster.permission.AWARD_COINS" android:protectionLevel="dangerous" android:label="Award Coins" android:description="@string/desc_award_coins" />
+  <permission android:name="com.gamemaster.permission.SPEND_COINS" android:protectionLevel="dangerous" android:label="Spend Coins" android:description="@string/desc_spend_coins" />
+  <permission android:name="com.gamemaster.permission.MANAGE_COINS" android:protectionLevel="dangerous" android:label="Manage Coins" android:description="@string/desc_manage_coins" />
+  <permission android:name="com.gamemaster.permission.READ_EXPPOINTS" android:protectionLevel="dangerous" android:label="Read ExpPoints" android:description="@string/desc_read_exppoints" />
+  <permission android:name="com.gamemaster.permission.AWARD_EXPPOINTS" android:protectionLevel="dangerous" android:label="Award ExpPoints" android:description="@string/desc_award_exppoints" />
+  <permission android:name="com.gamemaster.permission.SPEND_EXPPOINTS" android:protectionLevel="dangerous" android:label="Spend ExpPoints" android:description="@string/desc_spend_exppoints" />
+  <permission android:name="com.gamemaster.permission.MANAGE_EXPPOINTS" android:protectionLevel="dangerous" android:label="Manage ExpPoints" android:description="@string/desc_manage_exppoints" />
+  <permission android:name="com.gamemaster.permission.READ_INVENTORY" android:protectionLevel="dangerous" android:label="Read Inventory" android:description="@string/desc_read_inventory" />
+  <permission android:name="com.gamemaster.permission.AWARD_INVENTORY" android:protectionLevel="dangerous" android:label="Award Inventory" android:description="@string/desc_award_inventory" />
+  <permission android:name="com.gamemaster.permission.SPEND_INVENTORY" android:protectionLevel="dangerous" android:label="Spend Inventory" android:description="@string/desc_spend_inventory" />
+  <permission android:name="com.gamemaster.permission.MANAGE_INVENTORY" android:protectionLevel="dangerous" android:label="Manage Inventory" android:description="@string/desc_manage_inventory" />
 </manifest>

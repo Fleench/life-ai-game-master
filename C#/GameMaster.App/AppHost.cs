@@ -36,6 +36,12 @@ public static class AppHost
             
             services.AddGameMasterData(connString);
             
+#if ANDROID
+            services.AddSingleton<GameMaster.App.Services.IAppLauncherService, GameMaster.App.Android.AndroidAppLauncherService>();
+#else
+            services.AddSingleton<GameMaster.App.Services.IAppLauncherService, GameMaster.App.Services.DesktopAppLauncherService>();
+#endif
+            
             Services = services.BuildServiceProvider();
             
             // Initialize DB

@@ -20,18 +20,24 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private int _inventoryCount = 0;
 
-    public ReplViewModel ReplVm { get; }
+    public ProfileViewModel ProfileVm { get; }
     public AppHubViewModel AppHubVm { get; }
-    public PendingPermissionsViewModel PendingPermissionsVm { get; }
+    public ReplViewModel ReplVm { get; }
 
     public MainViewModel()
     {
-        ReplVm = new ReplViewModel();
-        ReplVm.CommandExecuted += (s, e) => LoadStats();
+        ProfileVm = new ProfileViewModel();
         AppHubVm = new AppHubViewModel();
-        PendingPermissionsVm = new PendingPermissionsViewModel();
+        ReplVm = new ReplViewModel();
         
         LoadStats();
+
+        var timer = new Avalonia.Threading.DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(2)
+        };
+        timer.Tick += (s, e) => { LoadStats(); };
+        timer.Start();
     }
     
     private async void LoadStats()
@@ -52,8 +58,16 @@ public partial class MainViewModel : ViewModelBase
         if (pointsService != null)
         {
             var balances = await pointsService.GetBalancesAsync();
-            ExpBalance = System.Linq.Enumerable.FirstOrDefault(balances, b => b.CurrencyId == "exp_points")?.Balance ?? 0;
-            CoinsBalance = System.Linq.Enumerable.FirstOrDefault(balances, b => b.CurrencyId == "coins")?.Balance ?? 0;
+            var bList = balances.ToList();
+            
+            var physical = bList.FirstOrDefault(b => b.CurrencyId == "physicalexp")?.Balance ?? 0;
+            var mental = bList.FirstOrDefault(b => b.CurrencyId == "mentalexp")?.Balance ?? 0;
+            var emotional = bList.FirstOrDefault(b => b.CurrencyId == "emotionalexp")?.Balance ?? 0;
+            var social = bList.FirstOrDefault(b => b.CurrencyId == "socialexp")?.Balance ?? 0;
+            var spiritual = bList.FirstOrDefault(b => b.CurrencyId == "spiritualexp")?.Balance ?? 0;
+            
+            ExpBalance = physical + mental + emotional + social + spiritual;
+            CoinsBalance = bList.FirstOrDefault(b => b.CurrencyId == "coins")?.Balance ?? 0;
         }
 
         if (inventoryService != null)

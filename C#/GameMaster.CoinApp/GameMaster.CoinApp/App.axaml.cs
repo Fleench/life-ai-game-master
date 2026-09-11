@@ -9,8 +9,6 @@ namespace GameMaster.CoinApp;
 
 public partial class App : Application
 {
-    public Action? OnRequestLaunchGameMaster { get; set; }
-
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -22,7 +20,6 @@ public partial class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         var viewModel = new MainViewModel();
-        viewModel.OnRequestLaunchGameMaster = () => OnRequestLaunchGameMaster?.Invoke();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

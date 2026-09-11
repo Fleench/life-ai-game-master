@@ -5,62 +5,48 @@
              x:DataType="vm:AppHubViewModel">
     
     <Panel>
-        <!-- App Grid View -->
-        <ScrollViewer Margin="10" IsVisible="{Binding SelectedApp, Converter={x:Static ObjectConverters.IsNull}}">
-            <ListBox ItemsSource="{Binding Apps}" SelectedItem="{Binding SelectedApp}" Background="Transparent" BorderThickness="0">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="vm:AppItemViewModel">
-                        <Border BorderBrush="#33000000" BorderThickness="1" CornerRadius="8" Margin="5" Padding="15" Width="200" Height="200" Background="#11000000">
-                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="10">
-                                <Image Source="{Binding Icon}" Width="64" Height="64" HorizontalAlignment="Center"/>
-                                <TextBlock Text="{Binding AppName}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
-                                <TextBlock Text="{Binding AppId}" FontSize="10" Foreground="Gray" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
-                            </StackPanel>
-                        </Border>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </ScrollViewer>
-
-        <!-- Permissions Page View -->
-        <Border Margin="10" Padding="20" Background="#11000000" CornerRadius="12" IsVisible="{Binding SelectedApp, Converter={x:Static ObjectConverters.IsNotNull}}">
-            <StackPanel Spacing="15">
-                <Button Content="⬅ Back to Apps" Command="{Binding ClearSelectionCommand}" Background="Transparent" Foreground="#007ACC" FontSize="16" FontWeight="Bold" Padding="0,0,0,10" />
-                
-                <TextBlock Text="{Binding SelectedApp.AppName, StringFormat='{}Managing Permissions for {0}'}" FontSize="24" FontWeight="Bold" />
-                <Button Content="Revoke App Registration" Command="{Binding RevokeAppCommand}" Foreground="Red" />
-
-                <TextBlock Text="Permissions:" FontSize="18" FontWeight="Bold" Margin="0,15,0,5" />
-
-                <ScrollViewer MaxHeight="500">
-                    <ItemsControl ItemsSource="{Binding Permissions}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="vm:PermissionItemViewModel">
-                                <Grid ColumnDefinitions="150, 100, 100, *" Margin="0,5">
-                                    <TextBlock Grid.Column="0" Text="{Binding Resource}" VerticalAlignment="Center" FontWeight="Bold" />
-                                    <TextBlock Grid.Column="1" Text="{Binding Action}" VerticalAlignment="Center" />
-                                    
-                                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
-                                        <TextBlock Text="Granted" Foreground="Green" IsVisible="{Binding IsGranted}" />
-                                        <TextBlock Text="Pending" Foreground="Orange" IsVisible="{Binding IsPending}" />
-                                        <TextBlock Text="Denied" Foreground="Red" IsVisible="{Binding IsDenied}" />
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="10">
-                                        <Button Content="Grant" Command="{Binding GrantCommand}" IsEnabled="{Binding !IsGranted}" />
-                                        <Button Content="Revoke" Command="{Binding RevokeCommand}" IsEnabled="{Binding IsGranted}" />
-                                    </StackPanel>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-            </StackPanel>
-        </Border>
+        <Grid RowDefinitions="Auto,*">
+            <Button Grid.Row="0" Content="Refresh" Command="{Binding LoadAppsCommand}" HorizontalAlignment="Right" Margin="10,10,10,0" />
+            <ScrollViewer Grid.Row="1" Margin="10">
+                <ItemsControl ItemsSource="{Binding Apps}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="vm:AppItemViewModel">
+                            <Button Background="Transparent" 
+                                    BorderBrush="#33000000" 
+                                    BorderThickness="1" 
+                                    CornerRadius="8" 
+                                    Margin="5" 
+                                    Padding="15" 
+                                    Width="200" 
+                                    Height="200"
+                                    Command="{Binding $parent[UserControl].((vm:AppHubViewModel)DataContext).LaunchAppCommand}"
+                                    CommandParameter="{Binding}">
+                                <Button.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="App Info" 
+                                                  Command="{Binding $parent[UserControl].((vm:AppHubViewModel)DataContext).OpenAppInfoCommand}"
+                                                  CommandParameter="{Binding}" />
+                                        <MenuItem Header="Delete" 
+                                                  Command="{Binding $parent[UserControl].((vm:AppHubViewModel)DataContext).DeleteAppCommand}"
+                                                  CommandParameter="{Binding}" />
+                                    </ContextMenu>
+                                </Button.ContextMenu>
+                                
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="10">
+                                    <Image Source="{Binding Icon}" Width="64" Height="64" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding AppName}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+                                    <TextBlock Text="{Binding AppId}" FontSize="10" Foreground="Gray" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
     </Panel>
 </UserControl>

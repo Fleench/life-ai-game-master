@@ -1,7 +1,7 @@
+using GameMaster.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using GameMaster.Core.Models;
 
 using CoreResource = GameMaster.Core.Models.Resource;
 
@@ -16,5 +16,4 @@ public interface IGameMasterBinder
     Task<IEnumerable<InventoryItem>> GetInventory();
     Task AddInventoryItem(string name, int qty, string? metadata);
     Task RemoveInventoryItem(Guid itemId, int qty);
-    Task<IEnumerable<AppPermission>> GetMyPermissions();
 }

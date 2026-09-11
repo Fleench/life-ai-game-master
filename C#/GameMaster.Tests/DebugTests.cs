@@ -36,8 +36,7 @@ public class DebugTests : IClassFixture<WebApplicationFactory<Program>>
 
         using (var scope = _factory.Services.CreateScope())
         {
-            var perms = scope.ServiceProvider.GetRequiredService<IPermissionsService>();
-            await perms.GrantAsync(appId, Resource.Inventory, PermissionAction.Award);
+
         }
 
         var req10 = new HttpRequestMessage(HttpMethod.Post, "/v1/inventory/add")

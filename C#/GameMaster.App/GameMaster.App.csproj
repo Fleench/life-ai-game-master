@@ -48,6 +48,7 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-android'">
     <PackageReference Include="Avalonia.Android" Version="11.2.0" />
     <AndroidResource Include="Android\Resources\values\styles.xml" />
+    <AndroidResource Include="Android\Resources\values\strings.xml" />
   </ItemGroup>
 
   <ItemGroup>

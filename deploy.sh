@@ -17,7 +17,7 @@ dotnet publish C#/GameMaster.CoinApp/GameMaster.CoinApp.Android/GameMaster.CoinA
 
 # Step 4
 echo "Connecting to ADB..."
-adb connect 192.168.1.119:44637
+adb connect 192.168.1.119:43711
 
 # Step 5
 echo "Uninstalling old apps..."

@@ -75,7 +75,6 @@ public partial class ReplViewModel : ViewModelBase
             var pointsService = AppHost.Services.GetService<GameMaster.Core.Services.IPointsService>();
             var inventoryService = AppHost.Services.GetService<GameMaster.Core.Services.IInventoryService>();
             var appRegistryService = AppHost.Services.GetService<GameMaster.Core.Services.IAppRegistryService>();
-            var permissionsService = AppHost.Services.GetService<GameMaster.Core.Services.IPermissionsService>();
 
             switch (cmd)
             {
@@ -144,19 +143,7 @@ public partial class ReplViewModel : ViewModelBase
                         }
                     }
                     break;
-                case "perms":
-                    if (permissionsService != null && parts.Length >= 5)
-                    {
-                        var appId = Guid.Parse(parts[1]);
-                        var action = parts[2].ToLowerInvariant();
-                        var resource = Enum.Parse<GameMaster.Core.Models.Resource>(parts[3], true);
-                        var permAction = Enum.Parse<GameMaster.Core.Models.PermissionAction>(parts[4], true);
-                        
-                        if (action == "grant") await permissionsService.GrantAsync(appId, resource, permAction);
-                        else if (action == "revoke") await permissionsService.RevokeAsync(appId, resource, permAction);
-                        Messages.Add(new ReplMessage { Text = "Permission updated.", Color = "#8AE234" });
-                    }
-                    break;
+
                 case "sync":
                     Messages.Add(new ReplMessage { Text = "Command execution pending.", Color = "#FCE94F" });
                     break;

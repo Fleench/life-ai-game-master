@@ -38,12 +38,12 @@ Retrieves the current points balances (Exp and Coins).
 
 **POST `/v1/points/award`**
 Awards points to the player.
-- **Request Body:** `{ "resource": 0 (ExpPoints) | 1 (Coins), "amount": Int }`
+- **Request Body:** `{ "resource": 0 (ExpPoints) | 1 (Coins) | 2 (PhysicalExp) | 3 (MentalExp) | 4 (EmotionalExp) | 5 (SocialExp) | 6 (SpiritualExp), "amount": Int }`
 - **Requires Permission:** `Award` on the specified resource.
 
 **POST `/v1/points/spend`**
 Spends points from the player's balance.
-- **Request Body:** `{ "resource": 0 (ExpPoints) | 1 (Coins), "amount": Int }`
+- **Request Body:** `{ "resource": 0 (ExpPoints) | 1 (Coins) | 2 (PhysicalExp) | 3 (MentalExp) | 4 (EmotionalExp) | 5 (SocialExp) | 6 (SpiritualExp), "amount": Int }`
 - **Requires Permission:** `Spend` on the specified resource.
 
 ### Inventory

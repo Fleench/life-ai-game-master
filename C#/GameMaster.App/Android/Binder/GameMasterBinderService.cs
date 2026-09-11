@@ -11,7 +11,7 @@ using GameMaster.Core.Services;
 
 namespace GameMaster.Android;
 
-[Service(Name = "com.gamemaster.GameMasterBinderService", Exported = true, Permission = "com.gamemaster.BIND", ForegroundServiceType = global::Android.Content.PM.ForegroundService.TypeDataSync)]
+[Service(Name = "com.gamemaster.GameMasterBinderService", Exported = true, ForegroundServiceType = global::Android.Content.PM.ForegroundService.TypeDataSync)]
 [IntentFilter(new[] { "com.gamemaster.BIND_SERVICE" })]
 public class GameMasterBinderService : Service
 {
@@ -128,35 +128,9 @@ public class GameMasterBinder : Binder, IGameMasterBinder
         return newApp.App;
     }
 
-    private async Task EnforcePermissionAsync(int uid, CoreResource resource, PermissionAction action)
-    {
-        var app = await GetOrRegisterCallerAppAsync(uid);
-        var permService = _serviceProvider.GetRequiredService<IPermissionsService>();
-        
-        bool granted = await permService.CheckAsync(app.AppId, resource, action);
-        if (!granted)
-        {
-            await permService.RequestIfNotExistsAsync(app.AppId, resource, action);
-            throw new Java.Lang.SecurityException($"Permission denied: UID {uid} requires {action} on {resource}");
-        }
-    }
 
-    private async Task CleanupDeadAppsAsync()
-    {
-        var appRegistry = _serviceProvider.GetRequiredService<IAppRegistryService>();
-        var apps = await appRegistry.ListAppsAsync();
-        foreach (var app in apps)
-        {
-            if (app.Platform == Platform.Android && app.AndroidUid.HasValue)
-            {
-                var packages = _context.PackageManager?.GetPackagesForUid(app.AndroidUid.Value);
-                if (packages == null || packages.Length == 0)
-                {
-                    await appRegistry.DeregisterAppAsync(app.AppId);
-                }
-            }
-        }
-    }
+
+
 
     // --- IGameMasterBinder Implementation ---
 
@@ -261,14 +235,10 @@ public class GameMasterBinder : Binder, IGameMasterBinder
                     await RemoveInventoryItem(req!.ItemId, req.Quantity);
                 }
                 break;
-            case "GetMyPermissionsAsync":
-                result = await GetMyPermissions();
-                break;
+            
             case "ListAppsAsync":
                 {
                     int uid = CallingUid;
-                    await EnforcePermissionAsync(uid, CoreResource.ExpPoints, PermissionAction.Manage);
-                    await CleanupDeadAppsAsync();
                     var appRegistry = _serviceProvider.GetRequiredService<IAppRegistryService>();
                     result = await appRegistry.ListAppsAsync();
                 }
@@ -276,61 +246,12 @@ public class GameMasterBinder : Binder, IGameMasterBinder
             case "RevokeAppAsync":
                 {
                     int uid = CallingUid;
-                    await EnforcePermissionAsync(uid, CoreResource.ExpPoints, PermissionAction.Manage);
                     var appRegistry = _serviceProvider.GetRequiredService<IAppRegistryService>();
                     var appId = System.Text.Json.JsonSerializer.Deserialize<Guid>(json, options);
                     await appRegistry.DeregisterAppAsync(appId);
                 }
                 break;
-            case "GrantPermissionAsync":
-                {
-                    int uid = CallingUid;
-                    await EnforcePermissionAsync(uid, CoreResource.ExpPoints, PermissionAction.Manage);
-                    var permService = _serviceProvider.GetRequiredService<IPermissionsService>();
-                    try
-                    {
-                        var doc = System.Text.Json.JsonDocument.Parse(json);
-                        var appId = doc.RootElement.GetProperty("appId").GetGuid();
-                        var resource = Enum.Parse<CoreResource>(doc.RootElement.GetProperty("resource").GetString()!, true);
-                        var action = Enum.Parse<PermissionAction>(doc.RootElement.GetProperty("action").GetString()!, true);
-                        await permService.GrantAsync(appId, resource, action);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Java.Lang.IllegalArgumentException("Invalid JSON or missing properties: " + ex.Message);
-                    }
-                }
-                break;
-            case "RevokePermissionAsync":
-                {
-                    int uid = CallingUid;
-                    await EnforcePermissionAsync(uid, CoreResource.ExpPoints, PermissionAction.Manage);
-                    var permService = _serviceProvider.GetRequiredService<IPermissionsService>();
-                    try
-                    {
-                        var doc = System.Text.Json.JsonDocument.Parse(json);
-                        var appId = doc.RootElement.GetProperty("appId").GetGuid();
-                        var resource = Enum.Parse<CoreResource>(doc.RootElement.GetProperty("resource").GetString()!, true);
-                        var action = Enum.Parse<PermissionAction>(doc.RootElement.GetProperty("action").GetString()!, true);
-                        await permService.RevokeAsync(appId, resource, action);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Java.Lang.IllegalArgumentException("Invalid JSON or missing properties: " + ex.Message);
-                    }
-                }
-                break;
-            case "RequestPermissionAsync":
-                {
-                    int uid = CallingUid;
-                    var app = await GetOrRegisterCallerAppAsync(uid);
-                    var doc = System.Text.Json.JsonDocument.Parse(json);
-                    var resource = Enum.Parse<CoreResource>(doc.RootElement.GetProperty("resource").GetString()!, true);
-                    var action = Enum.Parse<PermissionAction>(doc.RootElement.GetProperty("action").GetString()!, true);
-                    var permService = _serviceProvider.GetRequiredService<IPermissionsService>();
-                    await permService.RequestAsync(app.AppId, resource, action);
-                }
-                break;
+            
             default:
                 throw new Java.Lang.IllegalArgumentException("Unknown method: " + method);
         }
@@ -340,6 +261,12 @@ public class GameMasterBinder : Binder, IGameMasterBinder
             return System.Text.Json.JsonSerializer.Serialize(result, options);
         }
         return "";
+    }
+
+    private void EnforceAndroidPermission(string permission)
+    {
+        if (_context.CheckCallingPermission(permission) != global::Android.Content.PM.Permission.Granted)
+            throw new Java.Lang.SecurityException($"Requires {permission}");
     }
 
     public async Task<Player?> GetPlayer()
@@ -354,22 +281,23 @@ public class GameMasterBinder : Binder, IGameMasterBinder
     {
         int uid = CallingUid;
         var app = await GetOrRegisterCallerAppAsync(uid);
-        var permService = _serviceProvider.GetRequiredService<IPermissionsService>();
         var pointsService = _serviceProvider.GetRequiredService<IPointsService>();
 
         var dict = new Dictionary<CoreResource, int>();
 
-        if (await permService.CheckAsync(app.AppId, CoreResource.ExpPoints, PermissionAction.Read))
-            dict[CoreResource.ExpPoints] = (await pointsService.GetBalanceAsync(CoreResource.ExpPoints.ToString().ToLowerInvariant()))?.Balance ?? 0;
-
-        if (await permService.CheckAsync(app.AppId, CoreResource.Coins, PermissionAction.Read))
-            dict[CoreResource.Coins] = (await pointsService.GetBalanceAsync(CoreResource.Coins.ToString().ToLowerInvariant()))?.Balance ?? 0;
-
-        if (dict.Count == 0)
+        if (_context.CheckCallingPermission("com.gamemaster.permission.READ_EXPPOINTS") == global::Android.Content.PM.Permission.Granted)
         {
-            await permService.RequestIfNotExistsAsync(app.AppId, CoreResource.Coins, PermissionAction.Read);
-            await permService.RequestIfNotExistsAsync(app.AppId, CoreResource.ExpPoints, PermissionAction.Read);
-            throw new Java.Lang.SecurityException($"Permission denied: UID {uid} has no read access to Coins or ExpPoints");
+            dict[CoreResource.ExpPoints] = (await pointsService.GetBalanceAsync(CoreResource.ExpPoints.ToString().ToLowerInvariant()))?.Balance ?? 0;
+            dict[CoreResource.PhysicalExp] = (await pointsService.GetBalanceAsync(CoreResource.PhysicalExp.ToString().ToLowerInvariant()))?.Balance ?? 0;
+            dict[CoreResource.MentalExp] = (await pointsService.GetBalanceAsync(CoreResource.MentalExp.ToString().ToLowerInvariant()))?.Balance ?? 0;
+            dict[CoreResource.EmotionalExp] = (await pointsService.GetBalanceAsync(CoreResource.EmotionalExp.ToString().ToLowerInvariant()))?.Balance ?? 0;
+            dict[CoreResource.SocialExp] = (await pointsService.GetBalanceAsync(CoreResource.SocialExp.ToString().ToLowerInvariant()))?.Balance ?? 0;
+            dict[CoreResource.SpiritualExp] = (await pointsService.GetBalanceAsync(CoreResource.SpiritualExp.ToString().ToLowerInvariant()))?.Balance ?? 0;
+        }
+
+        if (_context.CheckCallingPermission("com.gamemaster.permission.READ_COINS") == global::Android.Content.PM.Permission.Granted)
+        {
+            dict[CoreResource.Coins] = (await pointsService.GetBalanceAsync(CoreResource.Coins.ToString().ToLowerInvariant()))?.Balance ?? 0;
         }
 
         return dict;
@@ -377,8 +305,12 @@ public class GameMasterBinder : Binder, IGameMasterBinder
 
     public async Task AwardPoints(CoreResource resource, int amount)
     {
+        if (resource == CoreResource.Coins)
+            EnforceAndroidPermission("com.gamemaster.permission.AWARD_COINS");
+        else if (resource == CoreResource.ExpPoints || resource == CoreResource.PhysicalExp || resource == CoreResource.MentalExp || resource == CoreResource.EmotionalExp || resource == CoreResource.SocialExp || resource == CoreResource.SpiritualExp)
+            EnforceAndroidPermission("com.gamemaster.permission.AWARD_EXPPOINTS");
+
         int uid = CallingUid;
-        await EnforcePermissionAsync(uid, resource, PermissionAction.Award);
         
         var pointsService = _serviceProvider.GetRequiredService<IPointsService>();
         var app = await GetOrRegisterCallerAppAsync(uid);
@@ -388,8 +320,12 @@ public class GameMasterBinder : Binder, IGameMasterBinder
 
     public async Task SpendPoints(CoreResource resource, int amount)
     {
+        if (resource == CoreResource.Coins)
+            EnforceAndroidPermission("com.gamemaster.permission.SPEND_COINS");
+        else if (resource == CoreResource.ExpPoints || resource == CoreResource.PhysicalExp || resource == CoreResource.MentalExp || resource == CoreResource.EmotionalExp || resource == CoreResource.SocialExp || resource == CoreResource.SpiritualExp)
+            EnforceAndroidPermission("com.gamemaster.permission.SPEND_EXPPOINTS");
+
         int uid = CallingUid;
-        await EnforcePermissionAsync(uid, resource, PermissionAction.Spend);
         
         var pointsService = _serviceProvider.GetRequiredService<IPointsService>();
         var app = await GetOrRegisterCallerAppAsync(uid);
@@ -399,8 +335,9 @@ public class GameMasterBinder : Binder, IGameMasterBinder
 
     public async Task<IEnumerable<InventoryItem>> GetInventory()
     {
+        EnforceAndroidPermission("com.gamemaster.permission.READ_INVENTORY");
+
         int uid = CallingUid;
-        await EnforcePermissionAsync(uid, CoreResource.Inventory, PermissionAction.Read);
         
         var invService = _serviceProvider.GetRequiredService<IInventoryService>();
         return await invService.GetItemsAsync();
@@ -409,7 +346,6 @@ public class GameMasterBinder : Binder, IGameMasterBinder
     public async Task AddInventoryItem(string name, int qty, string? metadata)
     {
         int uid = CallingUid;
-        await EnforcePermissionAsync(uid, CoreResource.Inventory, PermissionAction.Award);
         
         var invService = _serviceProvider.GetRequiredService<IInventoryService>();
         var app = await GetOrRegisterCallerAppAsync(uid);
@@ -420,7 +356,6 @@ public class GameMasterBinder : Binder, IGameMasterBinder
     public async Task RemoveInventoryItem(Guid itemId, int qty)
     {
         int uid = CallingUid;
-        await EnforcePermissionAsync(uid, CoreResource.Inventory, PermissionAction.Spend);
         
         var invService = _serviceProvider.GetRequiredService<IInventoryService>();
         
@@ -438,12 +373,5 @@ public class GameMasterBinder : Binder, IGameMasterBinder
         }
     }
 
-    public async Task<IEnumerable<AppPermission>> GetMyPermissions()
-    {
-        int uid = CallingUid;
-        var app = await GetOrRegisterCallerAppAsync(uid);
-        
-        var permService = _serviceProvider.GetRequiredService<IPermissionsService>();
-        return await permService.GetPermissionsAsync(app.AppId);
-    }
+    
 }

@@ -11,7 +11,6 @@ public static class ServiceCollectionExtensions {
         services.AddScoped<IPointsService, SqlitePointsService>();
         services.AddScoped<IInventoryService, SqliteInventoryService>();
         services.AddScoped<IAppRegistryService, SqliteAppRegistryService>();
-        services.AddScoped<IPermissionsService, SqlitePermissionsService>();
         services.AddScoped<ISyncService, SqliteSyncService>();
         return services;
     }

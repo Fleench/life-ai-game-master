@@ -22,23 +22,14 @@
                 <views:AppHubView DataContext="{Binding AppHubVm}" />
             </TabItem>
 
-            <!-- Permissions Tab -->
-            <TabItem>
-                <TabItem.Header>
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <TextBlock Text="Permissions" />
-                        <Border Background="#FF3B30" CornerRadius="8" Padding="4,1"
-                                IsVisible="{Binding PendingPermissionsVm.HasPendingRequests}">
-                            <TextBlock Text="!" Foreground="White" FontSize="10" FontWeight="Bold" />
-                        </Border>
-                    </StackPanel>
-                </TabItem.Header>
-                <views:PendingPermissionsView DataContext="{Binding PendingPermissionsVm}" />
+            <!-- User Profile Tab -->
+            <TabItem Header="Profile">
+                <views:ProfileView DataContext="{Binding ProfileVm}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
             </TabItem>
-            
+
             <!-- REPL Tab -->
-            <TabItem Header="REPL Terminal">
-                <views:ReplView DataContext="{Binding ReplVm}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+            <TabItem Header="Terminal">
+                <views:ReplView DataContext="{Binding ReplVm}" />
             </TabItem>
         </TabControl>
     </Grid>

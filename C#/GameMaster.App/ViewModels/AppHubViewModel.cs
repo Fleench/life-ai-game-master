@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GameMaster.Core.Models;
 using GameMaster.Core.Services;
+using GameMaster.App.Services;
 using Microsoft.Extensions.DependencyInjection;
 using CoreResource = GameMaster.Core.Models.Resource;
 
@@ -13,86 +14,78 @@ namespace GameMaster.App.ViewModels;
 
 public partial class AppHubViewModel : ViewModelBase
 {
+    private readonly IAppLauncherService? _launcherService;
+    private readonly IAppRegistryService? _appService;
+
     [ObservableProperty]
     private ObservableCollection<AppItemViewModel> _apps = new();
 
-    [ObservableProperty]
-    private AppItemViewModel? _selectedApp;
-
-    [ObservableProperty]
-    private ObservableCollection<PermissionItemViewModel> _permissions = new();
-
     public AppHubViewModel()
     {
-        LoadApps();
+        // Parameterless constructor for designer or backwards compatibility
+        if (AppHost.Services != null)
+        {
+            _launcherService = AppHost.Services.GetService<IAppLauncherService>();
+            _appService = AppHost.Services.GetService<IAppRegistryService>();
+        }
+        _ = LoadAppsAsync();
+    }
+
+    public AppHubViewModel(IAppLauncherService? launcherService, IAppRegistryService? appService)
+    {
+        _launcherService = launcherService;
+        _appService = appService;
+        _ = LoadAppsAsync();
     }
     
-    private async void LoadApps()
+    [RelayCommand]
+    private async Task LoadAppsAsync()
     {
-        if (AppHost.Services == null) return;
-        var appService = AppHost.Services.GetService<IAppRegistryService>();
-        if (appService != null)
+        if (_appService != null)
         {
-            var appsList = await appService.ListAppsAsync();
+            var appsList = await _appService.ListAppsAsync();
             Apps = new ObservableCollection<AppItemViewModel>(appsList.Select(a => new AppItemViewModel(a)));
-
-
         }
-    }
-
-    partial void OnSelectedAppChanged(AppItemViewModel? value)
-    {
-        if (value != null)
+        else if (AppHost.Services != null)
         {
-            _ = LoadPermissionsAsync(value.AppId);
-        }
-        else
-        {
-            Permissions.Clear();
-        }
-    }
-
-    private async Task LoadPermissionsAsync(Guid appId)
-    {
-        if (AppHost.Services == null) return;
-        var permissionsService = AppHost.Services.GetService<IPermissionsService>();
-        if (permissionsService == null) return;
-
-        var existing = (await permissionsService.GetPermissionsAsync(appId)).ToList();
-        var pendingRequests = (await permissionsService.GetPendingRequestsAsync()).Where(p => p.AppId == appId).ToList();
-
-        var viewModels = new ObservableCollection<PermissionItemViewModel>();
-
-        foreach (CoreResource resource in Enum.GetValues(typeof(CoreResource)))
-        {
-            foreach (PermissionAction action in Enum.GetValues(typeof(PermissionAction)))
+            // Fallback just in case
+            var appService = AppHost.Services.GetService<IAppRegistryService>();
+            if (appService != null)
             {
-                var granted = existing.Any(p => p.Resource == resource && p.Action == action && p.Granted);
-                var pending = pendingRequests.Any(p => p.Resource == resource && p.Action == action && !p.Granted);
-                
-                viewModels.Add(new PermissionItemViewModel(permissionsService, appId, resource, action, granted, pending));
+                var appsList = await appService.ListAppsAsync();
+                Apps = new ObservableCollection<AppItemViewModel>(appsList.Select(a => new AppItemViewModel(a)));
             }
         }
-
-        Permissions = viewModels;
     }
 
     [RelayCommand]
-    private async Task RevokeAppAsync()
+    private void LaunchApp(AppItemViewModel? app)
     {
-        if (SelectedApp == null || AppHost.Services == null) return;
-        var appService = AppHost.Services.GetService<IAppRegistryService>();
-        if (appService != null)
+        if (app == null || _launcherService == null) return;
+        _launcherService.LaunchApp(app.AppName);
+    }
+
+    [RelayCommand]
+    private void OpenAppInfo(AppItemViewModel? app)
+    {
+        if (app == null || _launcherService == null) return;
+        _launcherService.OpenAppInfo(app.AppName);
+    }
+
+    [RelayCommand]
+    private async Task DeleteAppAsync(AppItemViewModel? app)
+    {
+        if (app == null) return;
+        
+        if (_launcherService != null)
         {
-            await appService.DeregisterAppAsync(SelectedApp.AppId);
-            Apps.Remove(SelectedApp);
-            SelectedApp = null;
+            _launcherService.UninstallApp(app.AppName);
         }
-    }
 
-    [RelayCommand]
-    private void ClearSelection()
-    {
-        SelectedApp = null;
+        if (_appService != null)
+        {
+            await _appService.DeregisterAppAsync(app.AppId);
+            Apps.Remove(app);
+        }
     }
 }

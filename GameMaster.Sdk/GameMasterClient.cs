@@ -82,7 +82,8 @@ public class GameMasterClient : IPlayerEconomyService
             data!.WriteInterfaceToken("com.gamemaster.IGameMaster");
             data.WriteString(method);
             data.WriteString(jsonArgs);
-            binder.Transact(1, data, reply, 0);
+            bool success = binder.Transact(1, data, reply, 0);
+            if (!success) throw new Exception("Binder transaction failed");
             reply!.ReadException();
             return reply.ReadString() ?? "";
         }
@@ -93,18 +94,6 @@ public class GameMasterClient : IPlayerEconomyService
         }
     }
 
-    private void AutoLaunchGameMasterIfDenied(Exception ex)
-    {
-        if (ex is Java.Lang.SecurityException || ex.Message.Contains("Permission denied", StringComparison.OrdinalIgnoreCase) || ex.Message.Contains("Could not bind", StringComparison.OrdinalIgnoreCase))
-        {
-            var launchIntent = _context.PackageManager?.GetLaunchIntentForPackage("com.gamemaster.app");
-            if (launchIntent != null)
-            {
-                launchIntent.AddFlags(ActivityFlags.NewTask);
-                _context.StartActivity(launchIntent);
-            }
-        }
-    }
 #endif
 
     public async Task<PlayerProfile> GetPlayerProfileAsync()
@@ -137,13 +126,17 @@ public class GameMasterClient : IPlayerEconomyService
                     var bal = p.GetProperty("balance").GetInt32();
                     if (cid != null && cid.Equals("Coins", StringComparison.OrdinalIgnoreCase)) profile.Coins = bal;
                     if (cid != null && cid.Equals("ExpPoints", StringComparison.OrdinalIgnoreCase)) profile.Points = bal;
+                    if (cid != null && cid.Equals("PhysicalExp", StringComparison.OrdinalIgnoreCase)) profile.PhysicalExp = bal;
+                    if (cid != null && cid.Equals("MentalExp", StringComparison.OrdinalIgnoreCase)) profile.MentalExp = bal;
+                    if (cid != null && cid.Equals("EmotionalExp", StringComparison.OrdinalIgnoreCase)) profile.EmotionalExp = bal;
+                    if (cid != null && cid.Equals("SocialExp", StringComparison.OrdinalIgnoreCase)) profile.SocialExp = bal;
+                    if (cid != null && cid.Equals("SpiritualExp", StringComparison.OrdinalIgnoreCase)) profile.SpiritualExp = bal;
                 }
             }
             return profile;
         }
         catch (Exception ex)
         {
-            AutoLaunchGameMasterIfDenied(ex);
             return new PlayerProfile
             {
                 Id = Guid.NewGuid().ToString(),
@@ -197,7 +190,57 @@ public class GameMasterClient : IPlayerEconomyService
         }
         catch (Exception ex)
         {
-            AutoLaunchGameMasterIfDenied(ex);
+            return new CoinTransactionResult
+            {
+                Success = false,
+                NewBalance = 0,
+                Message = ex.Message
+            };
+        }
+#else
+        // Placeholder for actual Binder/API communication
+        return await Task.FromResult(new CoinTransactionResult
+        {
+            Success = true,
+            NewBalance = amount,
+            Message = "Transaction successful (mock)"
+        });
+#endif
+    }
+
+    public async Task<CoinTransactionResult> AdjustResourceAsync(string resource, int amount, string reason = "")
+    {
+#if ANDROID
+        var method = amount >= 0 ? "AwardPointsAsync" : "SpendPointsAsync";
+        var args = new { Resource = resource, Amount = Math.Abs(amount) };
+        var jsonArgs = JsonSerializer.Serialize(args);
+        
+        try
+        {
+            var pointsJson = await CallMethodAsync(method, jsonArgs);
+            int newBalance = 0;
+            
+            if (!string.IsNullOrEmpty(pointsJson))
+            {
+                using var pointsDoc = JsonDocument.Parse(pointsJson);
+                foreach (var p in pointsDoc.RootElement.EnumerateArray())
+                {
+                    if (p.GetProperty("currencyId").GetString()?.Equals(resource, StringComparison.OrdinalIgnoreCase) == true)
+                    {
+                        newBalance = p.GetProperty("balance").GetInt32();
+                    }
+                }
+            }
+            
+            return new CoinTransactionResult
+            {
+                Success = true,
+                NewBalance = newBalance,
+                Message = "Transaction successful"
+            };
+        }
+        catch (Exception ex)
+        {
             return new CoinTransactionResult
             {
                 Success = false,

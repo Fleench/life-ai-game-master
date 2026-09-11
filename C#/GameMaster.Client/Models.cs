@@ -3,7 +3,7 @@ using System;
 namespace GameMaster.Client.Models;
 
 public enum Platform { Desktop, Android, IosRemote }
-public enum Resource { ExpPoints, Coins, Inventory }
+public enum Resource { ExpPoints, Coins, Inventory, PhysicalExp, MentalExp, EmotionalExp, SocialExp, SpiritualExp }
 public enum PermissionAction { Read, Award, Spend, Manage }
 
 public record RegisterAppRequest(string AppName, Platform Platform);

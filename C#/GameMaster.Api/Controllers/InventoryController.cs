@@ -1,5 +1,4 @@
 using GameMaster.Api.DTOs;
-using GameMaster.Api.Filters;
 using GameMaster.Core.Models;
 using GameMaster.Core.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +17,6 @@ public class InventoryController : ControllerBase
     }
 
     [HttpGet]
-    [PermissionGuard(Resource.Inventory, PermissionAction.Read)]
     public async Task<IActionResult> GetInventory()
     {
         var items = await _inventoryService.GetItemsAsync();
@@ -26,7 +24,6 @@ public class InventoryController : ControllerBase
     }
 
     [HttpPost("add")]
-    [PermissionGuard(Resource.Inventory, PermissionAction.Award)]
     public async Task<IActionResult> AddItem([FromBody] AddInventoryItemRequest request)
     {
         if (HttpContext.Items.TryGetValue("ConnectedApp", out var appObj) && appObj is ConnectedApp app)
@@ -38,7 +35,6 @@ public class InventoryController : ControllerBase
     }
 
     [HttpPost("remove")]
-    [PermissionGuard(Resource.Inventory, PermissionAction.Spend)]
     public async Task<IActionResult> RemoveItem([FromBody] RemoveInventoryItemRequest request)
     {
         await _inventoryService.RemoveItemAsync(request.ItemId, request.Quantity);
