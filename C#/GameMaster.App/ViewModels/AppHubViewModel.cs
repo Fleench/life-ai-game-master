@@ -59,10 +59,10 @@ public partial class AppHubViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void LaunchApp(AppItemViewModel? app)
+    private void LaunchApp(AppItemViewModel? appViewModel)
     {
-        if (app == null || _launcherService == null) return;
-        _launcherService.LaunchApp(app.AppName);
+        if (appViewModel == null || _launcherService == null) return;
+        _launcherService.LaunchApp(appViewModel.App);
     }
 
     [RelayCommand]

@@ -1,14 +1,30 @@
 #if ANDROID
 using Android.Content;
 using GameMaster.App.Services;
+using GameMaster.Core.Models;
 
 namespace GameMaster.App.Android;
 
 public class AndroidAppLauncherService : IAppLauncherService
 {
-    public void LaunchApp(string packageName)
+    public void LaunchApp(ConnectedApp app)
     {
         var context = global::Android.App.Application.Context;
+        string? packageName = null;
+        if (app.AndroidUid.HasValue)
+        {
+            var packages = context.PackageManager?.GetPackagesForUid(app.AndroidUid.Value);
+            if (packages != null && packages.Length > 0)
+            {
+                packageName = packages[0];
+            }
+        }
+        
+        if (packageName == null)
+        {
+            packageName = app.AppName;
+        }
+        
         var intent = context.PackageManager?.GetLaunchIntentForPackage(packageName);
         if (intent != null)
         {
