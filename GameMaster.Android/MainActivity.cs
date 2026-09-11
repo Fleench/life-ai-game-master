@@ -1,6 +1,6 @@
 namespace GameMaster.Android;
 
-[Activity(Label = "@string/app_name", MainLauncher = true, WindowSoftInputMode = Android.Views.SoftInput.AdjustResize)]
+[Activity(Label = "@string/app_name", MainLauncher = true, WindowSoftInputMode = global::Android.Views.SoftInput.AdjustResize)]
 public class MainActivity : Activity
 {
     protected override void OnCreate(Bundle? savedInstanceState)
