@@ -15,6 +15,10 @@
     <EmbedAssembliesIntoApk Condition="'$(TargetFramework)' == 'net9.0-android'">true</EmbedAssembliesIntoApk>
     <AndroidUseFastDeployment Condition="'$(TargetFramework)' == 'net9.0-android'">false</AndroidUseFastDeployment>
     <RunAOTCompilation Condition="'$(TargetFramework)' == 'net9.0-android'">false</RunAOTCompilation>
+
+    <!-- UI safeguards and trimming configurations -->
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <TrimMode Condition="'$(TargetFramework)' == 'net9.0-android'">partial</TrimMode>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' != 'net9.0-android'">
@@ -30,6 +34,7 @@
     <PackageReference Include="Avalonia" Version="11.2.0" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.0" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.0" />
+    <PackageReference Include="Avalonia.Analyzers" Version="11.2.0" />
     <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3">
       <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
