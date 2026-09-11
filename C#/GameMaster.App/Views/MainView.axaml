@@ -27,10 +27,6 @@
                 <views:ProfileView DataContext="{Binding ProfileVm}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
             </TabItem>
 
-            <!-- REPL Tab -->
-            <TabItem Header="Terminal">
-                <views:ReplView DataContext="{Binding ReplVm}" />
-            </TabItem>
         </TabControl>
     </Grid>
 </UserControl>

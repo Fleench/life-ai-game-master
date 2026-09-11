@@ -22,13 +22,11 @@ public partial class MainViewModel : ViewModelBase
 
     public ProfileViewModel ProfileVm { get; }
     public AppHubViewModel AppHubVm { get; }
-    public ReplViewModel ReplVm { get; }
 
     public MainViewModel()
     {
         ProfileVm = new ProfileViewModel();
         AppHubVm = new AppHubViewModel();
-        ReplVm = new ReplViewModel();
         
         LoadStats();
 

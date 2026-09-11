@@ -1,0 +1,11 @@
+﻿<Solution>
+  <Project Path="GameMaster.ReplApp.Android/GameMaster.ReplApp.Android.csproj">
+    <Deploy />
+  </Project>
+  <Project Path="GameMaster.ReplApp.Browser/GameMaster.ReplApp.Browser.csproj" />
+  <Project Path="GameMaster.ReplApp.Desktop/GameMaster.ReplApp.Desktop.csproj" />
+  <Project Path="GameMaster.ReplApp.iOS/GameMaster.ReplApp.iOS.csproj">
+    <Deploy />
+  </Project>
+  <Project Path="GameMaster.ReplApp/GameMaster.ReplApp.csproj" />
+</Solution>
