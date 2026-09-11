@@ -26,16 +26,16 @@
                                     Height="200"
                                     Command="{Binding $parent[UserControl].((vm:AppHubViewModel)DataContext).LaunchAppCommand}"
                                     CommandParameter="{Binding}">
-                                <Button.ContextMenu>
-                                    <ContextMenu>
+                                <Button.ContextFlyout>
+                                    <MenuFlyout>
                                         <MenuItem Header="App Info" 
                                                   Command="{Binding $parent[UserControl].((vm:AppHubViewModel)DataContext).OpenAppInfoCommand}"
                                                   CommandParameter="{Binding}" />
                                         <MenuItem Header="Delete" 
                                                   Command="{Binding $parent[UserControl].((vm:AppHubViewModel)DataContext).DeleteAppCommand}"
                                                   CommandParameter="{Binding}" />
-                                    </ContextMenu>
-                                </Button.ContextMenu>
+                                    </MenuFlyout>
+                                </Button.ContextFlyout>
                                 
                                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="10">
                                     <Image Source="{Binding Icon}" Width="64" Height="64" HorizontalAlignment="Center"/>
