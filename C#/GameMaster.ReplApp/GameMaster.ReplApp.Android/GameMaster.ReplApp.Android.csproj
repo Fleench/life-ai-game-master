@@ -7,6 +7,7 @@
     <ApplicationId>com.CompanyName.GameMaster.ReplApp</ApplicationId>
     <ApplicationVersion>1</ApplicationVersion>
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationDisplayName>Game Master Console</ApplicationDisplayName>
     <AndroidPackageFormat>apk</AndroidPackageFormat>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <RunAOTCompilation>false</RunAOTCompilation>

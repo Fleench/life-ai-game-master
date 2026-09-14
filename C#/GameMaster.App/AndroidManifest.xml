@@ -11,7 +11,7 @@
         <action android:name="com.gamemaster.APP_CLIENT" />
     </intent>
   </queries>
-  <application android:allowBackup="true" android:label="Game Master" android:theme="@style/MyTheme.NoActionBar">
+  <application android:allowBackup="true" android:label="Game Master" android:icon="@drawable/Icon" android:theme="@style/MyTheme.NoActionBar">
   </application>
   <permission android:name="com.gamemaster.permission.READ_COINS" android:protectionLevel="dangerous" android:label="Read Coins" android:description="@string/desc_read_coins" />
   <permission android:name="com.gamemaster.permission.AWARD_COINS" android:protectionLevel="dangerous" android:label="Award Coins" android:description="@string/desc_award_coins" />

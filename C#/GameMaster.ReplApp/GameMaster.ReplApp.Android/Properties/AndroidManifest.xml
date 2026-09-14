@@ -16,7 +16,7 @@
 	<queries>
 		<package android:name="com.gamemaster.app" />
 	</queries>
-	<application android:label="GameMaster.ReplApp" android:icon="@drawable/Icon">
+	<application android:label="Game Master Console" android:icon="@drawable/Icon">
 		<receiver android:name=".GameMasterClientDummyReceiver" android:exported="true">
 			<intent-filter>
 				<action android:name="com.gamemaster.APP_CLIENT" />

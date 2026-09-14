@@ -10,7 +10,7 @@
 	<queries>
 		<package android:name="com.gamemaster.app" />
 	</queries>
-	<application android:label="GameMaster.CoinApp" android:icon="@drawable/Icon">
+	<application android:label="Self Rewards" android:icon="@drawable/Icon">
 		<receiver android:name=".GameMasterClientDummyReceiver" android:exported="true">
 			<intent-filter>
 				<action android:name="com.gamemaster.APP_CLIENT" />
