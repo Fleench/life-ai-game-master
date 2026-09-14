@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -19,6 +20,7 @@ public partial class AppHubViewModel : ViewModelBase
     private readonly IAppLauncherService? _launcherService;
     private readonly IAppRegistryService? _appService;
     private readonly DispatcherTimer _refreshTimer;
+    private readonly SemaphoreSlim _loadLock = new(1, 1);
 
     [ObservableProperty]
     private ObservableCollection<AppItemViewModel> _apps = new();
@@ -58,20 +60,42 @@ public partial class AppHubViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadAppsAsync()
     {
-        if (_appService != null)
+        // Guard against overlapping concurrent loads (timer + manual trigger)
+        if (!await _loadLock.WaitAsync(0)) return;
+        try
         {
-            var appsList = await _appService.ListAppsAsync();
-            Apps = new ObservableCollection<AppItemViewModel>(appsList.Select(a => new AppItemViewModel(a)));
-        }
-        else if (AppHost.Services != null)
-        {
-            // Fallback just in case
-            var appService = AppHost.Services.GetService<IAppRegistryService>();
-            if (appService != null)
+            IAppRegistryService? svc = _appService;
+            if (svc == null && AppHost.Services != null)
+                svc = AppHost.Services.GetService<IAppRegistryService>();
+
+            if (svc != null)
             {
-                var appsList = await appService.ListAppsAsync();
-                Apps = new ObservableCollection<AppItemViewModel>(appsList.Select(a => new AppItemViewModel(a)));
+                var appsList = await svc.ListAppsAsync();
+                var appIds = appsList.Select(a => a.AppId).ToHashSet();
+                
+                var toRemove = Apps.Where(a => !appIds.Contains(a.AppId)).ToList();
+                foreach (var a in toRemove)
+                {
+                    Apps.Remove(a);
+                }
+
+                foreach (var la in appsList)
+                {
+                    if (!Apps.Any(a => a.AppId == la.AppId))
+                    {
+                        Apps.Add(new AppItemViewModel(la));
+                    }
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            // Log to console; don't crash the UI — list simply retains its last known state
+            Console.Error.WriteLine($"[AppHubViewModel] LoadAppsAsync failed: {ex.Message}");
+        }
+        finally
+        {
+            _loadLock.Release();
         }
     }
 
