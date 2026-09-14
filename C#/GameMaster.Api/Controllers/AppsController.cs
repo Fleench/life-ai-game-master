@@ -16,6 +16,13 @@ public class AppsController : ControllerBase
         _appRegistryService = appRegistryService;
     }
 
+    [HttpGet]
+    public async Task<IActionResult> List()
+    {
+        var apps = await _appRegistryService.ListAppsAsync();
+        return Ok(apps);
+    }
+
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterAppRequest request)
     {
@@ -30,5 +37,12 @@ public class AppsController : ControllerBase
         if (app == null) return Unauthorized();
         var newKey = await _appRegistryService.RotateApiKeyAsync(app.AppId);
         return Ok(new { ApiKey = newKey });
+    }
+
+    [HttpDelete("{appId:guid}")]
+    public async Task<IActionResult> Delete(Guid appId)
+    {
+        await _appRegistryService.DeregisterAppAsync(appId);
+        return NoContent();
     }
 }

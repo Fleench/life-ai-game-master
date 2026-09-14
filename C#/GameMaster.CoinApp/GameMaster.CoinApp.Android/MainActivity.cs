@@ -9,7 +9,7 @@ using System;
 namespace GameMaster.CoinApp.Android;
 
 [Activity(
-    Label = "GameMaster.CoinApp.Android",
+    Label = "Self Rewards",
     Theme = "@style/MyTheme.NoActionBar",
     Icon = "@drawable/icon",
     MainLauncher = true,

@@ -9,7 +9,7 @@ using System;
 namespace GameMaster.ReplApp.Android;
 
 [Activity(
-    Label = "GameMaster.ReplApp.Android",
+    Label = "Game Master Console",
     Theme = "@style/MyTheme.NoActionBar",
     Icon = "@drawable/icon",
     MainLauncher = true,
